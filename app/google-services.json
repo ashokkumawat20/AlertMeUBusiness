@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "888387975030",
+    "firebase_url": "https://alertmeubusiness-de547.firebaseio.com",
+    "project_id": "alertmeubusiness-de547",
+    "storage_bucket": "alertmeubusiness-de547.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:888387975030:android:b2db9744cc80645110ac57",
+        "android_client_info": {
+          "package_name": "in.alertmeu.a4b"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "888387975030-fkcqopd14ol354ui6234v7nb4rebcg6k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCoYWPE24rGQ8wbEfmndNLfzH_lL5w8q64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "888387975030-fkcqopd14ol354ui6234v7nb4rebcg6k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
