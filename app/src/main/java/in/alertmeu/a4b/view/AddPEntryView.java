@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -68,7 +69,7 @@ public class AddPEntryView extends DialogFragment {
     CountryCodePicker ccp;
     LinearLayout hshow;
     TextView txtId;
-
+    Resources res;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -86,6 +87,7 @@ public class AddPEntryView extends DialogFragment {
 
         params.y = 50;
         window.setAttributes(params);
+        res = getResources();
         preferences = getActivity().getSharedPreferences("Prefrence", getActivity().MODE_PRIVATE);
         prefEditor = preferences.edit();
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.
@@ -125,6 +127,7 @@ public class AddPEntryView extends DialogFragment {
                 // TODO Auto-generated method stub
 
                 String s = otp.getText().toString().trim();
+                if (!businessMobile.equals("")) {
                 if (id.equals(s)) {
                     if (AppStatus.getInstance(context).isOnline()) {
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -133,18 +136,25 @@ public class AddPEntryView extends DialogFragment {
 
                     } else {
 
-                        Toast.makeText(context, Constant.INTERNET_MSG, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Code mismatch. Please try again!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), res.getString(R.string.jcodemis), Toast.LENGTH_SHORT).show();
                 }
+                } else {
+                    Toast.makeText(getActivity(), res.getString(R.string.jevmn), Toast.LENGTH_SHORT).show();
+
+                }
+
 
             }
         });
         verify.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                otp.setVisibility(View.VISIBLE);
+                hshow.setVisibility(View.VISIBLE);
+                txtId.setVisibility(View.VISIBLE);
                 if (validate(businessMobile)) {
                     businessMobile = ccp.getFullNumberWithPlus();
                     Random random = new Random();
@@ -164,11 +174,15 @@ public class AddPEntryView extends DialogFragment {
 
                 if (isValidNumber) {
                     businessMobile = ccp.getFullNumberWithPlus();
+                    placeBtn.setVisibility(View.GONE);
+                    verify.setVisibility(View.VISIBLE);
                     //  Toast.makeText(getApplicationContext(), "Your mobile number is valid.", Toast.LENGTH_SHORT).show();
                     // verifyMobileNumber();
                 } else {
                     businessMobile = "";
                     otp.setVisibility(View.GONE);
+                    hshow.setVisibility(View.GONE);
+                    txtId.setVisibility(View.GONE);
                     //Toast.makeText(getApplicationContext(), "Please Enter valid mobile number.", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -237,9 +251,9 @@ public class AddPEntryView extends DialogFragment {
             // Create a progressdialog
             mProgressDialog = new ProgressDialog(getActivity());
             // Set progressdialog title
-            mProgressDialog.setTitle("Please Wait...");
+            mProgressDialog.setTitle(res.getString(R.string.jpw));
             // Set progressdialog message
-            mProgressDialog.setMessage("Updating...");
+            mProgressDialog.setMessage(res.getString(R.string.jud));
             //mProgressDialog.setIndeterminate(false);
             // Show progressdialog
             mProgressDialog.show();

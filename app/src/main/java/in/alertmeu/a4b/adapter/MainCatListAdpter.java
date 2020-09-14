@@ -3,8 +3,10 @@ package in.alertmeu.a4b.adapter;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,8 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,9 +29,11 @@ import org.json.JSONObject;
 import java.util.List;
 
 import in.alertmeu.a4b.R;
+import in.alertmeu.a4b.imageUtils.ImageLoader;
 import in.alertmeu.a4b.models.MainCatModeDAO;
 import in.alertmeu.a4b.utils.Config;
 import in.alertmeu.a4b.utils.WebClient;
+import in.alertmeu.a4b.view.SubCatDetailsView;
 
 
 public class MainCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -73,13 +81,44 @@ public class MainCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHol
         final MyHolder myHolder = (MyHolder) holder;
         current = data.get(position);
 
-
-        myHolder.notes.setText(current.getCategory_name());
         myHolder.notes.setTag(position);
+        if (preferences.getString("ulang", "").equals("en")) {
+            if (current.getChecked_status().equals("0")) {
+                myHolder.notes.setText(current.getCategory_name().trim());
+                myHolder.notes.setTextColor(Color.parseColor("#000000"));
 
+            } else {
+                myHolder.notes.setText(current.getCategory_name().trim() + "(" + current.getChecked_status() + ")");
+                myHolder.notes.setTextColor(Color.parseColor("#23A566"));
+            }
+        } else if (preferences.getString("ulang", "").equals("hi")) {
+            if (current.getChecked_status().equals("0")) {
+                myHolder.notes.setText(current.getCategory_name_hindi().trim());
+                myHolder.notes.setTextColor(Color.parseColor("#000000"));
+
+            } else {
+                myHolder.notes.setText(current.getCategory_name_hindi().trim() + "(" + current.getChecked_status() + ")");
+                myHolder.notes.setTextColor(Color.parseColor("#23A566"));
+            }
+        }
         myHolder.id.setText(current.getId());
         myHolder.id.setTag(position);
-        myHolder.chkBox.setTag(position);
+        myHolder.layout_quotation.setTag(position);
+        if (!current.getImage_path().equals("")) {
+           // ImageLoader imageLoader = new ImageLoader(context);
+          //  imageLoader.DisplayImage(current.getImage_path(), myHolder.mimage);
+          //  myHolder.mimage.setTag(position);
+            Picasso.with(context).load(current.getImage_path()).noPlaceholder().into((ImageView) myHolder.mimage);
+          /*  ImageloaderNew imageLoader = new ImageloaderNew(context);
+            myHolder.mimage.setTag(current.getImage_path());
+            imageLoader.DisplayImage(current.getImage_path(), context,myHolder.mimage);*/
+        } else {
+            myHolder.mimage.setImageDrawable(context.getResources().getDrawable(R.drawable.default_category));
+            myHolder.mimage.setTag(position);
+
+
+        }
+       /* myHolder.chkBox.setTag(position);
         myHolder.chkBox.setChecked(data.get(position).isSelected());
         myHolder.chkBox.setTag(data.get(position));
         if (current.getChecked_status().equals("1")) {
@@ -112,7 +151,27 @@ public class MainCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
 
             }
+        });*/
+        myHolder.layout_quotation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int ID = (Integer) v.getTag();
+                Log.e("", "list Id" + ID);
+                current = data.get(ID);
+                if (preferences.getString("ulang", "").equals("en")) {
+                    prefEditor.putString("m_name_cat", current.getCategory_name());
+                } else if (preferences.getString("ulang", "").equals("hi")) {
+                    prefEditor.putString("m_name_cat", current.getCategory_name_hindi());
+                }
+                prefEditor.putString("m_id_l", current.getId());
+                prefEditor.commit();
+                // Toast.makeText(context, "Clicked on Checkbox: " + current.getId(), Toast.LENGTH_LONG).show();
+                SubCatDetailsView subCatDetailsView = new SubCatDetailsView();
+                subCatDetailsView.show(((AppCompatActivity) context).getSupportFragmentManager(), "subCatDetailsView");
+
+            }
         });
+
     }
 
 
@@ -126,6 +185,8 @@ public class MainCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         TextView txt_date, notes, id;
         CheckBox chkBox;
+        ImageView mimage;
+        LinearLayout layout_quotation;
 
 
         // create constructor to get widget reference
@@ -136,7 +197,8 @@ public class MainCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHol
             notes = (TextView) itemView.findViewById(R.id.comments);
             id = (TextView) itemView.findViewById(R.id.id);
             chkBox = (CheckBox) itemView.findViewById(R.id.chkBox);
-
+            mimage = (ImageView) itemView.findViewById(R.id.mimage);
+            layout_quotation = (LinearLayout) itemView.findViewById(R.id.layout_quotation);
 
         }
 

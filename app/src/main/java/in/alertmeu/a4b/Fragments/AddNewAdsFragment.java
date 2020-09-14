@@ -107,15 +107,9 @@ import java.util.Random;
 import java.util.Set;
 
 import in.alertmeu.a4b.R;
-import in.alertmeu.a4b.activity.AccountSetupActivity;
 import in.alertmeu.a4b.activity.AdsPreviewActivity;
-import in.alertmeu.a4b.activity.BusinessExpandableListViewActivity;
-import in.alertmeu.a4b.activity.BusinessProfileSettingActivity;
-import in.alertmeu.a4b.activity.EditAccountSetupActivity;
 import in.alertmeu.a4b.activity.EditAdsPreviewActivity;
-import in.alertmeu.a4b.activity.LoginActivity;
-import in.alertmeu.a4b.adapter.ActiveAdvertisementListAdpter;
-import in.alertmeu.a4b.adapter.AdvertisementListAdpter;
+import in.alertmeu.a4b.adapter.AdsSubCatListAdpter;
 import in.alertmeu.a4b.adapter.GridViewAdapter;
 import in.alertmeu.a4b.adapter.SubCatListAdpter;
 import in.alertmeu.a4b.imageUtils.ImageLoader;
@@ -188,6 +182,7 @@ public class AddNewAdsFragment extends Fragment {
     ArrayList<RunAddDAO> runAdd = new ArrayList<RunAddDAO>();
     boolean status, status2;
     int count = 0;
+    double discount;
     public ArrayList<String> map = new ArrayList<String>();
     JSONObject jsonLeadObjReq;
 
@@ -196,7 +191,7 @@ public class AddNewAdsFragment extends Fragment {
     MultipartEntity entity;
     CheckBox cmyList, cshowOnMap, cnearByClients;
     String map_status = "0", mylist_status = "0", nearclient_status = "0";
-    SubCatListAdpter subCatListAdpter;
+    AdsSubCatListAdpter subCatListAdpter;
     RecyclerView mainCatList;
     ArrayList<String> subCatArrayList;
     ArrayList<String> mainCatArrayList;
@@ -438,7 +433,7 @@ public class AddNewAdsFragment extends Fragment {
                 description = edtDescpritipon.getText().toString().trim();
                 describe_limitations = describeLimitations.getText().toString().trim();
                 if (validate(stime, sdate, tsign, title, fileName)) {
-                    List<SubCatModeDAO> stList = ((SubCatListAdpter) subCatListAdpter).getSservicelist();
+                    List<SubCatModeDAO> stList = ((AdsSubCatListAdpter) subCatListAdpter).getSservicelist();
                     String data1 = "";
                     String data2 = "";
                     String data3 = "";
@@ -475,8 +470,8 @@ public class AddNewAdsFragment extends Fragment {
         runAdd.add(new RunAddDAO("24", "24 " + res.getString(R.string.jhrss)));
         runAdd.add(new RunAddDAO("2", "2 " + res.getString(R.string.xday)));
         runAdd.add(new RunAddDAO("1", "1 " + res.getString(R.string.jweek)));
-        runAdd.add(new RunAddDAO("2", "2 " + res.getString(R.string.jweeks)));
-        runAdd.add(new RunAddDAO("1", "1 " + res.getString(R.string.jmonth)));
+        // runAdd.add(new RunAddDAO("2", "2 " + res.getString(R.string.jweeks)));
+        //    runAdd.add(new RunAddDAO("1", "1 " + res.getString(R.string.jmonth)));
 
         selectTime.clear();
         selectTime.add(new DateTimeDAO("1", res.getString(R.string.jrn)));
@@ -747,7 +742,7 @@ public class AddNewAdsFragment extends Fragment {
                     description = edtDescpritipon.getText().toString().trim();
                     describe_limitations = describeLimitations.getText().toString().trim();
                     if (validate(stime, sdate, tsign, title, fileName)) {
-                        List<SubCatModeDAO> stList = ((SubCatListAdpter) subCatListAdpter).getSservicelist();
+                        List<SubCatModeDAO> stList = ((AdsSubCatListAdpter) subCatListAdpter).getSservicelist();
                         String data1 = "";
                         String data2 = "";
                         String data3 = "";
@@ -807,7 +802,7 @@ public class AddNewAdsFragment extends Fragment {
                     description = edtDescpritipon.getText().toString();
                     describe_limitations = describeLimitations.getText().toString();
                     if (validate(stime, sdate, tsign, title, fileName)) {
-                        List<SubCatModeDAO> stList = ((SubCatListAdpter) subCatListAdpter).getSservicelist();
+                        List<SubCatModeDAO> stList = ((AdsSubCatListAdpter) subCatListAdpter).getSservicelist();
                         String data1 = "";
                         String data2 = "";
                         String data3 = "";
@@ -869,11 +864,11 @@ public class AddNewAdsFragment extends Fragment {
 
 
 //
-        SubCatListAdpter.bindListener(new Listener() {
+        AdsSubCatListAdpter.bindListener(new Listener() {
             @Override
             public void messageReceived(String messageText) {
                 if (AppStatus.getInstance(getActivity()).isOnline()) {
-                    List<SubCatModeDAO> stList = ((SubCatListAdpter) subCatListAdpter).getSservicelist();
+                    List<SubCatModeDAO> stList = ((AdsSubCatListAdpter) subCatListAdpter).getSservicelist();
                     String data3 = "";
                     subCatNameArrayList = new ArrayList<>();
                     for (int i = 0; i < stList.size(); i++) {
@@ -990,9 +985,22 @@ public class AddNewAdsFragment extends Fragment {
 
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        pickPhoto.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+       // pickPhoto.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         pickPhoto.setType("image/*");
         startActivityForResult(pickPhoto, PICK_IMAGE_MULTIPLE);
+
+      /*  Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+
+        startActivityForResult(chooserIntent, PICK_IMAGE_MULTIPLE);*/
+
+
     }
 
     /**
@@ -1053,48 +1061,48 @@ public class AddNewAdsFragment extends Fragment {
                     imagesEncodedList = new ArrayList<String>();
                     Uri mImageUri = data.getData();
                     mArrayUri.add(mImageUri);
+                    if (!mImageUri.toString().contains("content://com.google.android.apps.docs")) {
+                        // Get the cursor
+                        Cursor cursor = getActivity().getContentResolver().query(mImageUri, filePathColumn, null, null, null);
+                        // Move to first row
+                        cursor.moveToFirst();
 
-                    // Get the cursor
-                    Cursor cursor = getActivity().getContentResolver().query(mImageUri, filePathColumn, null, null, null);
-                    // Move to first row
-                    cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        imageEncoded = cursor.getString(columnIndex);
 
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    imageEncoded = cursor.getString(columnIndex);
-
-                    cursor.close();
-                    Log.v("LOG_TAG", "imageEncoded" + imageEncoded);
-                    Log.v("LOG_TAG", "Selected Images" + mImageUri);
-                    // Create a String array for FilePathStrings
+                        cursor.close();
+                        Log.v("LOG_TAG", "imageEncoded" + imageEncoded);
+                        Log.v("LOG_TAG", "Selected Images" + mImageUri);
+                        // Create a String array for FilePathStrings
 
 
-                    //File myFile = new File(mImageUri.getPath());
+                        //File myFile = new File(mImageUri.getPath());
 
-                    //Log.d("LOG_TAG", "imageToUpload" + getPathFromUri(getActivity(), mImageUri));
+                        //Log.d("LOG_TAG", "imageToUpload" + getPathFromUri(getActivity(), mImageUri));
 
-                    imagesEncodedList.add(getPathFromUri(getActivity(), mImageUri));
-                    //  imagesEncodedList.add(getRealPathFromUri(mImageUri));
+                        imagesEncodedList.add(getPathFromUri(getActivity(), mImageUri));
+                        //  imagesEncodedList.add(getRealPathFromUri(mImageUri));
 
-                    // Get the path of the image file
-                    // FilePathStrings = new String[1];
-                    // FileNameStrings = new String[1];
-                    //  FilePathStrings[0] = getPathFromUri(getActivity(), mImageUri);
-                    // Get the name image file
-                    //  FileNameStrings[0] = getFileName(mImageUri);
-                    fileName = getFileName(mImageUri);
-                    ifg = 2;
-                    // FileNameDAO f1 = new FileNameDAO(getFileName(mImageUri), getPathFromUri(CreateQRCodeActivity.this, mImageUri));
-                    //al.add(f1);
-                    //  f.setFile_name(getFileName(mImageUri));
-                    //  f.setFile_path(getPathFromUri(getActivity(), mImageUri));
-                    // Locate the GridView in gridview_main.xml
-                    BitmapFactory.Options options = new BitmapFactory.Options();
-                    // down sizing image as it throws OutOfMemory Exception for larger
-                    // images
-                    options.inSampleSize = 1;
-                    Bitmap bitmap = BitmapFactory.decodeFile(getPathFromUri(getActivity(), mImageUri), options);
-                    // Bitmap bitmap = Bitmap.createScaledBitmap(getPathFromUri(getActivity(), mImageUri), 250, 250, true);
-                    // Bitmap bitmap = BitmapFactory.decodeFile(getRealPathFromUri(mImageUri), options);
+                        // Get the path of the image file
+                        // FilePathStrings = new String[1];
+                        // FileNameStrings = new String[1];
+                        //  FilePathStrings[0] = getPathFromUri(getActivity(), mImageUri);
+                        // Get the name image file
+                        //  FileNameStrings[0] = getFileName(mImageUri);
+                        fileName = getFileName(mImageUri);
+                        ifg = 2;
+                        // FileNameDAO f1 = new FileNameDAO(getFileName(mImageUri), getPathFromUri(CreateQRCodeActivity.this, mImageUri));
+                        //al.add(f1);
+                        //  f.setFile_name(getFileName(mImageUri));
+                        //  f.setFile_path(getPathFromUri(getActivity(), mImageUri));
+                        // Locate the GridView in gridview_main.xml
+                        BitmapFactory.Options options = new BitmapFactory.Options();
+                        // down sizing image as it throws OutOfMemory Exception for larger
+                        // images
+                        options.inSampleSize = 1;
+                        Bitmap bitmap = BitmapFactory.decodeFile(getPathFromUri(getActivity(), mImageUri), options);
+                        // Bitmap bitmap = Bitmap.createScaledBitmap(getPathFromUri(getActivity(), mImageUri), 250, 250, true);
+                        // Bitmap bitmap = BitmapFactory.decodeFile(getRealPathFromUri(mImageUri), options);
 
                    /* //1
                     int imageRotation = getImageRotation(myFile);
@@ -1102,19 +1110,21 @@ public class AddNewAdsFragment extends Fragment {
                         bitmap = getBitmapRotatedByDegree(bitmap, imageRotation);
                     //*/
 
-                    Bitmap orientedBitmap = ExifUtil.rotateBitmap(getPathFromUri(getActivity(), mImageUri), bitmap);
-                    //Bitmap orientedBitmap = ExifUtil.rotateBitmap(getRealPathFromUri(mImageUri), bitmap);
-                    //   grid = (GridView) v.findViewById(R.id.gridview);
-                    //grid.setVisibility(View.VISIBLE);
-                    // Pass String arrays to LazyAdapter Class
-                    //   adapter = new GridViewAdapter(getActivity(), FilePathStrings, FileNameStrings);
-                    // Set the LazyAdapter to the GridView
-                    //  grid.setAdapter(adapter);
+                        Bitmap orientedBitmap = ExifUtil.rotateBitmap(getPathFromUri(getActivity(), mImageUri), bitmap);
+                        //Bitmap orientedBitmap = ExifUtil.rotateBitmap(getRealPathFromUri(mImageUri), bitmap);
+                        //   grid = (GridView) v.findViewById(R.id.gridview);
+                        //grid.setVisibility(View.VISIBLE);
+                        // Pass String arrays to LazyAdapter Class
+                        //   adapter = new GridViewAdapter(getActivity(), FilePathStrings, FileNameStrings);
+                        // Set the LazyAdapter to the GridView
+                        //  grid.setAdapter(adapter);
 
-                    imageView.setVisibility(View.VISIBLE);
-                    imageView.setImageBitmap(orientedBitmap);
-                    //  new ImagegenrateTaskGallery().execute();
-
+                        imageView.setVisibility(View.VISIBLE);
+                        imageView.setImageBitmap(orientedBitmap);
+                        //  new ImagegenrateTaskGallery().execute();
+                    } else {
+                        Toast.makeText(getActivity(), res.getString(R.string.jsunc), Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     /*if (data.getClipData() != null) {
                         ClipData mClipData = data.getClipData();
@@ -1370,12 +1380,12 @@ public class AddNewAdsFragment extends Fragment {
             FileNameStrings[0] = fileName;
             fileName = getFileName(Uri.fromFile(destination));
             // Locate the GridView in gridview_main.xml
-           // grid = (GridView) v.findViewById(R.id.gridview);
+            // grid = (GridView) v.findViewById(R.id.gridview);
             //  grid.setVisibility(View.VISIBLE);
             // Pass String arrays to LazyAdapter Class
-         //   adapter = new GridViewAdapter(getActivity(), FilePathStrings, FileNameStrings);
+            //   adapter = new GridViewAdapter(getActivity(), FilePathStrings, FileNameStrings);
             // Set the LazyAdapter to the GridView
-         //   grid.setAdapter(adapter);
+            //   grid.setAdapter(adapter);
             // Capture gridview item click
             imageView.setVisibility(View.VISIBLE);
             imageView.setImageBitmap(bitmap);
@@ -1514,8 +1524,10 @@ public class AddNewAdsFragment extends Fragment {
                             // uploadbtn.setVisibility(View.VISIBLE);
                             if (preferences.getInt("provalid", 0) == 0) {
                                 rate = Double.parseDouble(alertTypeDAO.getAds_pricing());
+                                discount = Double.parseDouble(alertTypeDAO.getDiscount());
                             } else {
                                 rate = 0.0;
+                                discount = 0.0;
                             }
                             currency_sign = alertTypeDAO.getCurrency_sign();
                             prefEditor.putString("currency_sign", currency_sign);
@@ -1606,12 +1618,12 @@ public class AddNewAdsFragment extends Fragment {
                                         if (preferences.getString("ulang", "").equals("en")) {
                                             if (subCatAList.contains(json_data.getString("subcategory_name"))) {
                                                 if (preferences.getString("ulang", "").equals("en")) {
-                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name"), true));
+                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name"), true, json_data.getString("image_path")));
                                                     //  temp = json_data.getString("subcategory_name");
 
                                                     subCatNameArrayListTemp.add(json_data.getString("subcategory_name"));
                                                 } else if (preferences.getString("ulang", "").equals("hi")) {
-                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name_hindi"), true));
+                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name_hindi"), true, json_data.getString("image_path")));
                                                     //  temp = json_data.getString("subcategory_name");
 
                                                     subCatNameArrayListTemp.add(json_data.getString("subcategory_name_hindi"));
@@ -1620,9 +1632,9 @@ public class AddNewAdsFragment extends Fragment {
 
                                             } else {
                                                 if (preferences.getString("ulang", "").equals("en")) {
-                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name"), false));
+                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name"), false, json_data.getString("image_path")));
                                                 } else if (preferences.getString("ulang", "").equals("hi")) {
-                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name_hindi"), false));
+                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name_hindi"), false, json_data.getString("image_path")));
 
                                                 }
 
@@ -1630,12 +1642,12 @@ public class AddNewAdsFragment extends Fragment {
                                         } else if (preferences.getString("ulang", "").equals("hi")) {
                                             if (subCatAList.contains(json_data.getString("subcategory_name_hindi"))) {
                                                 if (preferences.getString("ulang", "").equals("en")) {
-                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name"), true));
+                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name"), true, json_data.getString("image_path")));
                                                     //  temp = json_data.getString("subcategory_name");
 
                                                     subCatNameArrayListTemp.add(json_data.getString("subcategory_name"));
                                                 } else if (preferences.getString("ulang", "").equals("hi")) {
-                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name_hindi"), true));
+                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name_hindi"), true, json_data.getString("image_path")));
                                                     //  temp = json_data.getString("subcategory_name");
 
                                                     subCatNameArrayListTemp.add(json_data.getString("subcategory_name_hindi"));
@@ -1644,9 +1656,9 @@ public class AddNewAdsFragment extends Fragment {
 
                                             } else {
                                                 if (preferences.getString("ulang", "").equals("en")) {
-                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name"), false));
+                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name"), false, json_data.getString("image_path")));
                                                 } else if (preferences.getString("ulang", "").equals("hi")) {
-                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name_hindi"), false));
+                                                    subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name_hindi"), false, json_data.getString("image_path")));
 
                                                 }
 
@@ -1654,9 +1666,9 @@ public class AddNewAdsFragment extends Fragment {
                                         }
                                     } else {
                                         if (preferences.getString("ulang", "").equals("en")) {
-                                            subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name"), false));
+                                            subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name"), false, json_data.getString("image_path")));
                                         } else if (preferences.getString("ulang", "").equals("hi")) {
-                                            subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name_hindi"), false));
+                                            subCatModeDAOArrayList.add(new SubCatModeDAO(json_data.getString("id"), json_data.getString("bc_id"), json_data.getString("subcategory_name_hindi"), false, json_data.getString("image_path")));
 
                                         }
 
@@ -1704,7 +1716,7 @@ public class AddNewAdsFragment extends Fragment {
 
             if (subCatModeDAOArrayList.size() > 0) {
 
-                subCatListAdpter = new SubCatListAdpter(getActivity(), subCatModeDAOArrayList);
+                subCatListAdpter = new AdsSubCatListAdpter(getActivity(), subCatModeDAOArrayList);
                 mainCatList.setAdapter(subCatListAdpter);
                 mainCatList.setLayoutManager(new LinearLayoutManager(getActivity()));
                 subCatListAdpter.notifyDataSetChanged();
@@ -2541,6 +2553,7 @@ public class AddNewAdsFragment extends Fragment {
                         put("aTime", thours);
                         put("aCost", rate);
                         put("aShoppers", 10);
+                        put("discount", discount);
                         put("acountryCode", preferences.getString("country_code", ""));
                         put("anotifyFlag", n_flag);
                     } catch (Exception e) {

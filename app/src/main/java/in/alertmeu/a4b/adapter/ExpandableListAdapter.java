@@ -184,7 +184,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public long getGroupId(int groupPosition) {
         return groupPosition;
     }
-
+    @Override
+    public void notifyDataSetChanged()
+    {
+        // Refresh List rows
+        super.notifyDataSetChanged();
+    }
     @Override
     public View getGroupView(int groupPosition, boolean isLastChild, View view,
                              ViewGroup parent) {

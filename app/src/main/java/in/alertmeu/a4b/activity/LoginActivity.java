@@ -76,6 +76,15 @@ public class LoginActivity extends AppCompatActivity {
         ccp.setCountryPreference(ccp.getDefaultCountryNameCode());
         prefEditor.putString("country_code", ccp.getSelectedCountryCodeWithPlus());
         prefEditor.commit();
+        ccp.setOnCountryChangeListener(new CountryCodePicker.OnCountryChangeListener() {
+            @Override
+            public void onCountrySelected() {
+                //  String CountryCode = Locale.getDefault().getCountry();
+                //  Toast.makeText(getApplicationContext(), "Updated " + CountryCode, Toast.LENGTH_SHORT).show();
+                prefEditor.putString("country_code", ccp.getSelectedCountryCodeWithPlus());
+                prefEditor.commit();
+            }
+        });
         ccp.setPhoneNumberValidityChangeListener(new CountryCodePicker.PhoneNumberValidityChangeListener() {
             @Override
             public void onValidityChanged(boolean isValidNumber) {

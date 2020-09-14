@@ -15,8 +15,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 
 import in.alertmeu.a4b.R;
+import in.alertmeu.a4b.imageUtils.ImageLoader;
 import in.alertmeu.a4b.models.CurrentUserLocationAdvertisementDAO;
 import in.alertmeu.a4b.models.MainCatModeDAO;
 import in.alertmeu.a4b.utils.AppStatus;
@@ -85,12 +89,53 @@ public class CurrentUsersCountListAdpter extends RecyclerView.Adapter<RecyclerVi
         // Get current position of item in recyclerview to bind data and assign values from list
         final MyHolder myHolder = (MyHolder) holder;
         current = data.get(position);
-        if (preferences.getString("ulang", "").equals("en")) {
-            myHolder.notes.setText(current.getUser_count() + "+ " + res.getString(R.string.jfor) + " " + current.getCategory_name() + "/" + current.getSubcategory_name());
-        } else if (preferences.getString("ulang", "").equals("hi")) {
-            myHolder.notes.setText(current.getUser_count() + "+ " + res.getString(R.string.jfor) + " " + current.getCategory_name_hindi() + "/" + current.getSubcategory_name_hindi());
+        myHolder.mimage.setTag(position);
+        myHolder.subimage.setTag(position);
+
+       /* if (!current.getMain_image_path().equals("")) {
+            ImageLoader imageLoader = new ImageLoader(context);
+            imageLoader.DisplayImage(current.getMain_image_path(), myHolder.mimage);
+
+          *//*  ImageloaderNew imageLoader = new ImageloaderNew(context);
+            viewHolderMain.mimage.setTag(headerInfo.getImage_path());
+            imageLoader.DisplayImage(headerInfo.getImage_path(), context, viewHolderMain.mimage);*//*
+        } else {
+            myHolder.mimage.setImageDrawable(context.getResources().getDrawable(R.drawable.default_category));
+
+
+        }*/
+        if (!current.getSub_image_path().equals("")) {
+           // ImageLoader imageLoader = new ImageLoader(context);
+          //  imageLoader.DisplayImage(current.getSub_image_path(), myHolder.subimage);
+            Picasso.with(context).load(current.getSub_image_path()).noPlaceholder().into((ImageView) myHolder.subimage);
+
+           /* ImageloaderNew imageLoader = new ImageloaderNew(context);
+            viewHolderChild.subimage.setTag(detailInfo.getImage_path());
+            imageLoader.DisplayImage(detailInfo.getImage_path(), context,  viewHolderChild.subimage);*/
+        } else {
+            //  viewHolderChild.subimage.setImageResource(R.drawable.default_sub_category);
+            myHolder.subimage.setImageDrawable(context.getResources().getDrawable(R.drawable.default_sub_category));
 
         }
+
+        if (preferences.getString("ulang", "").equals("en")) {
+            myHolder.notes.setText(current.getUser_count() + "+ " + " " + current.getCategory_name() + "/" + current.getSubcategory_name());
+        } else if (preferences.getString("ulang", "").equals("hi")) {
+            myHolder.notes.setText(current.getUser_count() + "+ " + " " + current.getCategory_name_hindi() + "/" + current.getSubcategory_name_hindi());
+
+        }
+        /*if (preferences.getString("ulang", "").equals("en")) {
+
+            myHolder.maincat.setText(current.getUser_count() + "+ " + " " + current.getCategory_name() + "/");
+            myHolder.notes.setText(current.getSubcategory_name());
+
+        } else if (preferences.getString("ulang", "").equals("hi")) {
+            myHolder.maincat.setText(current.getUser_count() + "+ " + " " + current.getCategory_name_hindi() + "/");
+
+            myHolder.notes.setText(current.getSubcategory_name_hindi());
+
+        }*/
+        myHolder.maincat.setTag(position);
         myHolder.notes.setTag(position);
 
         myHolder.chkBox.setTag(position);
@@ -144,16 +189,19 @@ public class CurrentUsersCountListAdpter extends RecyclerView.Adapter<RecyclerVi
 
     class MyHolder extends RecyclerView.ViewHolder {
 
-        TextView txt_date, notes, id;
+        TextView txt_date, notes, maincat;
         CheckBox chkBox;
-
+        ImageView mimage, subimage;
 
         // create constructor to get widget reference
         public MyHolder(View itemView) {
             super(itemView);
             txt_date = (TextView) itemView.findViewById(R.id.txt_date);
             notes = (TextView) itemView.findViewById(R.id.comments);
+            maincat = (TextView) itemView.findViewById(R.id.maincat);
             chkBox = (CheckBox) itemView.findViewById(R.id.chkBox);
+            mimage = (ImageView) itemView.findViewById(R.id.mimage);
+            subimage = (ImageView) itemView.findViewById(R.id.subimage);
 
 
         }

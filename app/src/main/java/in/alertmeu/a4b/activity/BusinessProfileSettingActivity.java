@@ -37,6 +37,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -128,6 +130,7 @@ public class BusinessProfileSettingActivity extends AppCompatActivity {
     Resources res;
     private static final String FILE_NAME = "file_lang";
     private static final String KEY_LANG = "key_lang";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -162,7 +165,7 @@ public class BusinessProfileSettingActivity extends AppCompatActivity {
         btnshopPrec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(BusinessProfileSettingActivity.this, BusinessExpandableListViewActivity.class);
+                Intent intent = new Intent(BusinessProfileSettingActivity.this, BusinessMainCategoryActivity.class);
                 startActivity(intent);
             }
         });
@@ -200,6 +203,7 @@ public class BusinessProfileSettingActivity extends AppCompatActivity {
                 if (AppStatus.getInstance(getApplicationContext()).isOnline()) {
                     Intent intent = new Intent(BusinessProfileSettingActivity.this, EditAccountSetupActivity.class);
                     startActivity(intent);
+                    finish();
                 } else {
 
                     Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
@@ -401,7 +405,9 @@ public class BusinessProfileSettingActivity extends AppCompatActivity {
             userName.setText(businessName);
             fileName = businessName;
             tempimageName = businessImage;
-            referralCode.setText(preferences.getString("business_referral_code", ""));
+            // referralCode.setText(preferences.getString("business_referral_code", ""));
+            String qr = preferences.getString("business_referral_code", "").substring(0, 1) + "-" + preferences.getString("business_referral_code", "").substring(1, 5) + "-" + preferences.getString("business_referral_code", "").substring(5, 9);
+            referralCode.setText(qr);
             if (!businessMobile.equals("null")) {
                 userMobile.setVisibility(View.VISIBLE);
                 userMobile.setText(businessMobile);
@@ -410,10 +416,10 @@ public class BusinessProfileSettingActivity extends AppCompatActivity {
                 usermailid.setVisibility(View.VISIBLE);
                 usermailid.setText(businessEmail);
             }
-            ImageLoader imageLoader = new ImageLoader(BusinessProfileSettingActivity.this);
-            imageLoader.DisplayImage(businessImage, profilePic);
+            //  ImageLoader imageLoader = new ImageLoader(BusinessProfileSettingActivity.this);
+            //  imageLoader.DisplayImage(businessImage, profilePic);
 
-
+            Picasso.with(BusinessProfileSettingActivity.this).load(businessImage).noPlaceholder().into((ImageView) profilePic);
             // Close the progressdialog
             //  mProgressDialog.dismiss();
         }
@@ -475,7 +481,7 @@ public class BusinessProfileSettingActivity extends AppCompatActivity {
 
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        pickPhoto.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+       // pickPhoto.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         pickPhoto.setType("image/*");
         startActivityForResult(pickPhoto, PICK_IMAGE_MULTIPLE);
 
@@ -514,45 +520,48 @@ public class BusinessProfileSettingActivity extends AppCompatActivity {
 
                     Uri mImageUri = data.getData();
                     mArrayUri.add(mImageUri);
+                    if (!mImageUri.toString().contains("content://com.google.android.apps.docs")) {
+                        // Get the cursor
+                        Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
+                        // Move to first row
+                        cursor.moveToFirst();
 
-                    // Get the cursor
-                    Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
-                    // Move to first row
-                    cursor.moveToFirst();
+                        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                        imageEncoded = cursor.getString(columnIndex);
 
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    imageEncoded = cursor.getString(columnIndex);
+                        cursor.close();
+                        Log.v("LOG_TAG", "imageEncoded" + imageEncoded);
+                        Log.v("LOG_TAG", "Selected Images" + mImageUri);
+                        // Create a String array for FilePathStrings
+                        FilePathStrings = new String[1];
+                        // Create a String array for FileNameStrings
+                        FileNameStrings = new String[1];
 
-                    cursor.close();
-                    Log.v("LOG_TAG", "imageEncoded" + imageEncoded);
-                    Log.v("LOG_TAG", "Selected Images" + mImageUri);
-                    // Create a String array for FilePathStrings
-                    FilePathStrings = new String[1];
-                    // Create a String array for FileNameStrings
-                    FileNameStrings = new String[1];
+                        //   File myFile = new File(mImageUri.getPath());
 
-                    //   File myFile = new File(mImageUri.getPath());
+                        //  Log.d("LOG_TAG", "imageToUpload" + getPathFromUri(BusinessProfileSettingActivity.this, mImageUri));
 
-                    //  Log.d("LOG_TAG", "imageToUpload" + getPathFromUri(BusinessProfileSettingActivity.this, mImageUri));
+                        imagesEncodedList.add(getPathFromUri(BusinessProfileSettingActivity.this, mImageUri));
+                        // imagesEncodedList.add(getRealPathFromUri(mImageUri));
 
-                    imagesEncodedList.add(getPathFromUri(BusinessProfileSettingActivity.this, mImageUri));
-                    // imagesEncodedList.add(getRealPathFromUri(mImageUri));
-
-                    // Get the path of the image file
-                    // FilePathStrings[i] = myFile.getAbsolutePath();
-                    // FilePathStrings[0] = getRealPathFromURI(mImageUri);
-                    //   FilePathStrings[0] = getPathFromUri(BusinessProfileSettingActivity.this, mImageUri);
-                    // Get the name image file
-                    FileNameStrings[0] = getFileName(mImageUri);
-                    // Toast.makeText(getApplicationContext(), "Uploading image", Toast.LENGTH_SHORT).show();
-                    if (mArrayUri.size() > 0) {
-                        for (int i = 0; i < imagesEncodedList.size(); i++) {
-                            map.add(imagesEncodedList.get(i).toString());
+                        // Get the path of the image file
+                        // FilePathStrings[i] = myFile.getAbsolutePath();
+                        // FilePathStrings[0] = getRealPathFromURI(mImageUri);
+                        //   FilePathStrings[0] = getPathFromUri(BusinessProfileSettingActivity.this, mImageUri);
+                        // Get the name image file
+                        FileNameStrings[0] = getFileName(mImageUri);
+                        // Toast.makeText(getApplicationContext(), "Uploading image", Toast.LENGTH_SHORT).show();
+                        if (mArrayUri.size() > 0) {
+                            for (int i = 0; i < imagesEncodedList.size(); i++) {
+                                map.add(imagesEncodedList.get(i).toString());
+                            }
+                            new ImageUploadTask().execute(count + "", getFileName(mArrayUri.get(count)));
+                            if (!tempimageName.equals("")) {
+                                new deleteDisContinue().execute();
+                            }
                         }
-                        new ImageUploadTask().execute(count + "", getFileName(mArrayUri.get(count)));
-                        if (!tempimageName.equals("")) {
-                            new deleteDisContinue().execute();
-                        }
+                    } else {
+                        Toast.makeText(BusinessProfileSettingActivity.this, res.getString(R.string.jsunc), Toast.LENGTH_SHORT).show();
                     }
 
                 } else {
@@ -1167,6 +1176,7 @@ public class BusinessProfileSettingActivity extends AppCompatActivity {
             }
         }
     }
+
     private void loadLanguage() {
         Locale locale = new Locale(getLangCode());
         Locale.setDefault(locale);
@@ -1180,6 +1190,7 @@ public class BusinessProfileSettingActivity extends AppCompatActivity {
         String langCode = preferences.getString(KEY_LANG, "en");
         return langCode;
     }
+
     @Override
     public void onBackPressed() {
         // TODO Auto-generated method stub

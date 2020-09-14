@@ -27,36 +27,46 @@ import java.util.List;
 import in.alertmeu.a4b.JsonUtils.JsonHelper;
 import in.alertmeu.a4b.R;
 import in.alertmeu.a4b.adapter.MainCatListAdpter;
+import in.alertmeu.a4b.imageUtils.ImageLoader;
 import in.alertmeu.a4b.models.MainCatModeDAO;
 import in.alertmeu.a4b.utils.AppStatus;
 import in.alertmeu.a4b.utils.Config;
 import in.alertmeu.a4b.utils.Constant;
+import in.alertmeu.a4b.utils.Listener;
 import in.alertmeu.a4b.utils.WebClient;
+import in.alertmeu.a4b.view.SubCatDetailsView;
 
 public class BusinessMainCategoryActivity extends AppCompatActivity {
     SharedPreferences preferences;
     SharedPreferences.Editor prefEditor;
     RecyclerView mainCatList;
-    JSONObject jsonLeadObj;
+    JSONObject jsonLeadObj,jsonSchedule;
     JSONArray jsonArray;
-    String myPlaceListResponse = "";
+    String myPlaceListResponse = "",imagePathResponse="";
     List<MainCatModeDAO> data;
     MainCatListAdpter mainCatListAdpter;
     LinearLayout showhide;
     ProgressDialog mProgressDialog;
-    LinearLayout btnNext;
+    LinearLayout btnNext,shmsg;
     Resources res;
+    boolean status;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_business_main_category);
         res = getResources();
+        ImageLoader imageLoader = new ImageLoader(BusinessMainCategoryActivity.this);
+        imageLoader.clearCache();
         mainCatList = (RecyclerView) findViewById(R.id.mainCatList);
         btnNext = (LinearLayout) findViewById(R.id.btnNext);
+        shmsg = (LinearLayout) findViewById(R.id.shmsg);
+        data = new ArrayList<>();
         preferences = getSharedPreferences("Prefrence", MODE_PRIVATE);
         prefEditor = preferences.edit();
         if (AppStatus.getInstance(getApplicationContext()).isOnline()) {
             new getMyPlaceList().execute();
+            getImagePath();
         } else {
 
             Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
@@ -65,8 +75,20 @@ public class BusinessMainCategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (AppStatus.getInstance(getApplicationContext()).isOnline()) {
-                    Intent intent = new Intent(BusinessMainCategoryActivity.this, BusinessSubCategoryActivity.class);
+                    Intent intent = new Intent(BusinessMainCategoryActivity.this, HomePageActivity.class);
                     startActivity(intent);
+                } else {
+
+                    Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        SubCatDetailsView.bindListener(new Listener() {
+            @Override
+            public void messageReceived(String messageText) {
+                if (AppStatus.getInstance(getApplicationContext()).isOnline()) {
+                    new getMyPlaceList().execute();
+                    getImagePath();
                 } else {
 
                     Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
@@ -97,6 +119,7 @@ public class BusinessMainCategoryActivity extends AppCompatActivity {
                 {
                     try {
                         put("business_user_id", preferences.getString("business_user_id", ""));
+                        put("country_code", preferences.getString("country_code", ""));
                     } catch (Exception e) {
                         e.printStackTrace();
                         Log.e("json exception", "json exception" + e);
@@ -118,7 +141,7 @@ public class BusinessMainCategoryActivity extends AppCompatActivity {
 
                             try {
 
-                                data = new ArrayList<>();
+
                                 JsonHelper jsonHelper = new JsonHelper();
                                 data = jsonHelper.parseMyPlaceList(myPlaceListResponse);
                                 jsonArray = new JSONArray(myPlaceListResponse);
@@ -158,9 +181,9 @@ public class BusinessMainCategoryActivity extends AppCompatActivity {
         protected void onPostExecute(Void args) {
             if (data.size() > 0) {
 
-                mainCatListAdpter = new MainCatListAdpter(getApplication(), data);
+                mainCatListAdpter = new MainCatListAdpter(BusinessMainCategoryActivity.this, data);
                 mainCatList.setAdapter(mainCatListAdpter);
-                mainCatList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                mainCatList.setLayoutManager(new LinearLayoutManager(BusinessMainCategoryActivity.this));
                 mainCatListAdpter.notifyDataSetChanged();
                 mProgressDialog.dismiss();
             } else {
@@ -171,7 +194,59 @@ public class BusinessMainCategoryActivity extends AppCompatActivity {
             }
         }
     }
+    public void getImagePath() {
 
+        jsonSchedule = new JSONObject() {
+            {
+                try {
+                    put("business_user_id", preferences.getString("business_user_id", ""));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e("json exception", "json exception" + e);
+                }
+            }
+        };
+
+
+        Thread objectThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                WebClient serviceAccess = new WebClient();
+                Log.i("json", "json" + jsonSchedule);
+                imagePathResponse = serviceAccess.SendHttpPost(Config.URL_CUCBID, jsonSchedule);
+                Log.i("resp", "imagePathResponse" + imagePathResponse);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            JSONObject jsonObject = new JSONObject(imagePathResponse);
+                            status = jsonObject.getBoolean("status");
+                            if (status) {
+                                shmsg.setVisibility(View.GONE);
+                                btnNext.setVisibility(View.VISIBLE);
+                            } else {
+                                btnNext.setVisibility(View.GONE);
+                                shmsg.setVisibility(View.VISIBLE);
+                            }
+
+
+                        } catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+
+
+            }
+        });
+
+        objectThread.start();
+
+    }
     protected boolean isJSONValid(String callReoprtResponse2) {
         // TODO Auto-generated method stub
         try {

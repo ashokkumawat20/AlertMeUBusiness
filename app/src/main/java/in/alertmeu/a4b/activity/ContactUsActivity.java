@@ -212,6 +212,7 @@ public class ContactUsActivity extends AppCompatActivity {
 
                     Uri mImageUri = data.getData();
                     mArrayUri.add(mImageUri);
+                    if (!mImageUri.toString().contains("content://com.google.android.apps.docs")) {
                     picUri = mImageUri;
                     // Get the cursor
                     Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
@@ -240,7 +241,9 @@ public class ContactUsActivity extends AppCompatActivity {
                     imageOne.setImageBitmap(orientedBitmap);
                     img_1 = "CU_" + preferences.getString("business_user_id", "") + "_lib_2_" + System.currentTimeMillis() + ".png";
                     imageOneName = Config.URL_AlertMeUImage + "uploads/" + img_1;
-
+                    } else {
+                        Toast.makeText(ContactUsActivity.this, res.getString(R.string.jsunc), Toast.LENGTH_SHORT).show();
+                    }
                 } else {
 
                 }
@@ -253,6 +256,7 @@ public class ContactUsActivity extends AppCompatActivity {
 
                     Uri mImageUri = data.getData();
                     mArrayUri.add(mImageUri);
+                    if (!mImageUri.toString().contains("content://com.google.android.apps.docs")) {
                     picUri = mImageUri;
                     // Get the cursor
                     Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
@@ -281,7 +285,9 @@ public class ContactUsActivity extends AppCompatActivity {
                     imageTwo.setImageBitmap(orientedBitmap);
                     img_2 = "CU_" + preferences.getString("business_user_id", "") + "_lib_1_" + System.currentTimeMillis() + ".png";
                     imageTwoName = Config.URL_AlertMeUImage + "uploads/" + img_2;
-
+                } else {
+                    Toast.makeText(ContactUsActivity.this, res.getString(R.string.jsunc), Toast.LENGTH_SHORT).show();
+                }
                 } else {
 
                 }
@@ -294,6 +300,7 @@ public class ContactUsActivity extends AppCompatActivity {
 
                     Uri mImageUri = data.getData();
                     mArrayUri.add(mImageUri);
+                    if (!mImageUri.toString().contains("content://com.google.android.apps.docs")) {
                     picUri = mImageUri;
                     // Get the cursor
                     Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
@@ -321,7 +328,9 @@ public class ContactUsActivity extends AppCompatActivity {
                     imageThree.setImageBitmap(orientedBitmap);
                     img_3 = "CU_" + preferences.getString("business_user_id", "") + "_lib_1_" + System.currentTimeMillis() + ".png";
                     imageThreename = Config.URL_AlertMeUImage + "uploads/" + img_3;
-
+                    } else {
+                        Toast.makeText(ContactUsActivity.this, res.getString(R.string.jsunc), Toast.LENGTH_SHORT).show();
+                    }
 
                 } else {
 

@@ -30,6 +30,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,6 +89,7 @@ public class AdvertisementListAdpter extends RecyclerView.Adapter<RecyclerView.V
     Resources res;
     private static final String FILE_NAME = "file_lang";
     private static final String KEY_LANG = "key_lang";
+
     // create constructor to innitilize context and data sent from MainActivity
     public AdvertisementListAdpter(Context context, List<AdvertisementDAO> data) {
         this.context = context;
@@ -303,18 +306,27 @@ public class AdvertisementListAdpter extends RecyclerView.Adapter<RecyclerView.V
         myHolder.barCodeCat.setText(res.getString(R.string.jbcd) + current.getRq_code());
         myHolder.barCodeCat.setTag(position);
 
-        myHolder.mainCat.setText(res.getString(R.string.jadcat) + current.getBusiness_main_category());
-        myHolder.mainCat.setTag(position);
+        if (preferences.getString("ulang", "").equals("en")) {
+            myHolder.mainCat.setText(res.getString(R.string.jadcat) + current.getBusiness_main_category());
+            myHolder.mainCat.setTag(position);
 
-        myHolder.subCat.setText(res.getString(R.string.jadscat) + current.getBusiness_subcategory());
-        myHolder.subCat.setTag(position);
+            myHolder.subCat.setText(res.getString(R.string.jadscat) + current.getBusiness_subcategory());
+            myHolder.subCat.setTag(position);
+        } else if (preferences.getString("ulang", "").equals("hi")) {
+            myHolder.mainCat.setText(res.getString(R.string.jadcat) + current.getBusiness_main_category_hindi());
+            myHolder.mainCat.setTag(position);
 
+            myHolder.subCat.setText(res.getString(R.string.jadscat) + current.getBusiness_subcategory_hindi());
+            myHolder.subCat.setTag(position);
+        }
         myHolder.txtValidity.setText(parseTime(current.getS_time(), "HH:mm", "hh:mm aa") + " on " + formateDateFromstring("yyyy-MM-dd", "dd-MMM-yyyy", current.getS_date()) + " to " + parseTime(current.getE_time(), "HH:mm", "hh:mm aa") + " on " + formateDateFromstring("yyyy-MM-dd", "dd-MMM-yyyy", current.getE_date()));
         myHolder.txtValidity.setTag(position);
 
-        ImageLoader imageLoader = new ImageLoader(context);
+      //  ImageLoader imageLoader = new ImageLoader(context);
         image_path = current.getOriginal_image_path();
-        imageLoader.DisplayImage(current.getOriginal_image_path(), myHolder.imageView);
+      //  imageLoader.DisplayImage(current.getOriginal_image_path(), myHolder.imageView);
+        Picasso.with(context).load(current.getOriginal_image_path()).noPlaceholder().into((ImageView) myHolder.imageView);
+
         myHolder.imageView.setTag(position);
         myHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -339,8 +351,14 @@ public class AdvertisementListAdpter extends RecyclerView.Adapter<RecyclerView.V
                 intent.putExtra("description", current.getDescription());
                 context.startActivity(intent);*/
                 current = data.get(ID);
-                mainCatArrayList.add(current.getBusiness_main_category());
-                subCatArrayList = WebClient.convertStringwithCommaToArrayList(current.getBusiness_subcategory());
+                if (preferences.getString("ulang", "").equals("en")) {
+                    mainCatArrayList.add(current.getBusiness_main_category());
+                    subCatArrayList = WebClient.convertStringwithCommaToArrayList(current.getBusiness_subcategory());
+                }
+                else if (preferences.getString("ulang", "").equals("hi")) {
+                    mainCatArrayList.add(current.getBusiness_main_category_hindi());
+                    subCatArrayList = WebClient.convertStringwithCommaToArrayList(current.getBusiness_subcategory_hindi());
+                }
                 prefEditor.putString("bid", current.getId());
                 prefEditor.putString("title", current.getTitle());
                 prefEditor.putString("description", current.getDescription());
@@ -971,6 +989,7 @@ public class AdvertisementListAdpter extends RecyclerView.Adapter<RecyclerView.V
         }
         return time;
     }
+
     private String getLangCode(Context context) {
         SharedPreferences preferences = context.getSharedPreferences(FILE_NAME, context.MODE_PRIVATE);
         String langCode = preferences.getString(KEY_LANG, "");

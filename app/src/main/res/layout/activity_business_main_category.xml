@@ -29,7 +29,7 @@
                 android:background="#ff0000"
                 android:gravity="center|center_horizontal"
                 android:paddingLeft="@dimen/spacing_medium"
-                android:text="@string/regReAS"
+                android:text="@string/setmyprec"
                 android:textColor="#ffffff"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -57,10 +57,10 @@
 
         <LinearLayout
             android:id="@+id/btnNext"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
-            android:layout_marginBottom="20dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -80,6 +80,28 @@
                 android:layout_marginRight="@dimen/spacing_small"
                 android:layout_weight=".1"
                 android:src="@drawable/keyboard_arrow_right" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/shmsg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btnNext"
+            android:layout_marginBottom="10dp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@string/xnbc"
+                android:textColor="#ff0000"
+                ></TextView>
+
+
         </LinearLayout>
 
     </RelativeLayout>

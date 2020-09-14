@@ -10,8 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +23,7 @@ import org.json.JSONObject;
 import java.util.List;
 
 import in.alertmeu.a4b.R;
+import in.alertmeu.a4b.imageUtils.ImageLoader;
 import in.alertmeu.a4b.models.MainCatModeDAO;
 import in.alertmeu.a4b.models.SubCatModeDAO;
 import in.alertmeu.a4b.utils.Config;
@@ -58,7 +62,7 @@ public class SubCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHold
     // Inflate the layout when viewholder created
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.layout_maincat_details, parent, false);
+        View view = inflater.inflate(R.layout.layout_subcat_details, parent, false);
         MyHolder holder = new MyHolder(view);
 
         return holder;
@@ -71,17 +75,41 @@ public class SubCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHold
         // Get current position of item in recyclerview to bind data and assign values from list
         final MyHolder myHolder = (MyHolder) holder;
         current = data.get(position);
+        myHolder.subimage.setTag(position);
 
+        if (preferences.getString("ulang", "").equals("en")) {
+            myHolder.notes.setText(current.getSubcategory_name());
+            myHolder.notes.setTag(position);
+        } else if (preferences.getString("ulang", "").equals("hi")) {
+            myHolder.notes.setText(current.getSubcategory_name_hindi());
+            myHolder.notes.setTag(position);
+        }
+        if (!current.getImage_path().equals("")) {
+            //ImageLoader imageLoader = new ImageLoader(context);
+           // imageLoader.DisplayImage(current.getImage_path(), myHolder.subimage);
+            Picasso.with(context).load(current.getImage_path()).noPlaceholder().into((ImageView) myHolder.subimage);
 
-        myHolder.notes.setText(current.getSubcategory_name());
-        myHolder.notes.setTag(position);
+           /* ImageloaderNew imageLoader = new ImageloaderNew(context);
+            viewHolderChild.subimage.setTag(detailInfo.getImage_path());
+            imageLoader.DisplayImage(detailInfo.getImage_path(), context,  viewHolderChild.subimage);*/
+        } else {
+            //  viewHolderChild.subimage.setImageResource(R.drawable.default_sub_category);
+            myHolder.subimage.setImageDrawable(context.getResources().getDrawable(R.drawable.default_sub_category));
 
+        }
         myHolder.id.setText(current.getId());
         myHolder.id.setTag(position);
         myHolder.chkBox.setTag(position);
         myHolder.chkBox.setChecked(current.isSelected());
-      //  myHolder.chkBox.setChecked(data.get(position).isSelected());
+        //  myHolder.chkBox.setChecked(data.get(position).isSelected());
         myHolder.chkBox.setTag(data.get(position));
+        if (current.getChecked_status().equals("1")) {
+            myHolder.chkBox.setChecked(true);
+            current.setSelected(true);
+        } else {
+            myHolder.chkBox.setChecked(false);
+            current.setSelected(false);
+        }
         myHolder.chkBox.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 CheckBox cb = (CheckBox) v;
@@ -89,22 +117,22 @@ public class SubCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
                 contact.setSelected(cb.isChecked());
                 data.get(pos).setSelected(cb.isChecked());
-                mListener.messageReceived(message);
+               /* mListener.messageReceived(message);
                 if (cb.isChecked()) {
                     //Toast.makeText(v.getContext(), "Clicked on Checkbox: " + cb.getText() + " is " + cb.isChecked() + data.get(pos).getId(), Toast.LENGTH_LONG).show();
                     Config.VALUE.add(data.get(pos).getId());
                     id = data.get(pos).getId();
                     myHolder.chkBox.setChecked(true);
-                   // new submitData().execute();
+                    // new submitData().execute();
                 } else if (!cb.isChecked()) {
                     // Toast.makeText(v.getContext(), "Clicked on Checkbox: " + cb.getText() + " is " + cb.isChecked() + data.get(pos).getId(), Toast.LENGTH_LONG).show();
                     id1 = data.get(pos).getId();
                     myHolder.chkBox.setChecked(false);
-                   // new deleteSale().execute();
+                    // new deleteSale().execute();
                     Config.VALUE.remove(data.get(pos).getId());
 
                 }
-
+*/
 
             }
         });
@@ -121,7 +149,7 @@ public class SubCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         TextView txt_date, notes, id;
         CheckBox chkBox;
-
+        ImageView mimage, subimage;
 
         // create constructor to get widget reference
         public MyHolder(View itemView) {
@@ -131,6 +159,7 @@ public class SubCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHold
             notes = (TextView) itemView.findViewById(R.id.comments);
             id = (TextView) itemView.findViewById(R.id.id);
             chkBox = (CheckBox) itemView.findViewById(R.id.chkBox);
+            subimage = (ImageView) itemView.findViewById(R.id.subimage);
 
 
         }
@@ -219,6 +248,7 @@ public class SubCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     //
+
     private class deleteSale extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
@@ -317,9 +347,11 @@ public class SubCatListAdpter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
         return true;
     }
+
     public static void bindListener(Listener listener) {
         mListener = listener;
     }
+
     // method to access in activity after updating selection
     public List<SubCatModeDAO> getSservicelist() {
         return data;

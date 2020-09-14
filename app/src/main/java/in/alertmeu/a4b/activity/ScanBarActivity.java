@@ -52,6 +52,7 @@ public class ScanBarActivity extends AppCompatActivity {
     Resources res;
     private static final String FILE_NAME = "file_lang";
     private static final String KEY_LANG = "key_lang";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,13 +71,17 @@ public class ScanBarActivity extends AppCompatActivity {
         naviBtn = (ImageView) findViewById(R.id.naviBtn);
         btnscanbar = (ImageView) findViewById(R.id.btnscanbar);
         txtScan = (TextView) findViewById(R.id.txtScan);
-        btnscanbarC=(LinearLayout)findViewById(R.id.btnscanbarC);
+        btnscanbarC = (LinearLayout) findViewById(R.id.btnscanbarC);
         btnscanbarC.setBackgroundColor(Color.parseColor("#809E9E9E"));
         values = preferences.getString("value", "");
-        String a[] = values.split("#");
-        user_id = a[0];
-        business_id = a[1];
-        barcode = a[2];
+        try {
+            String a[] = values.split("#");
+            user_id = a[0];
+            business_id = a[1];
+            barcode = a[2];
+        } catch (Exception e) {
+
+        }
         btnBusinessList = (ImageView) findViewById(R.id.btnBusinessList);
         naviBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +89,7 @@ public class ScanBarActivity extends AppCompatActivity {
                 if (AppStatus.getInstance(getApplicationContext()).isOnline()) {
                     Intent intent = new Intent(ScanBarActivity.this, BusinessProfileSettingActivity.class);
                     startActivity(intent);
-
+                    finish();
 
                 } else {
 
@@ -98,6 +103,7 @@ public class ScanBarActivity extends AppCompatActivity {
                 Intent intent = new Intent(ScanBarActivity.this, TabsFragmentActivity.class);
                 intent.putExtra("active", "1");
                 startActivity(intent);
+                finish();
             }
         });
         btnHome.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +111,7 @@ public class ScanBarActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ScanBarActivity.this, HomePageActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
         btnscanbar.setOnClickListener(new View.OnClickListener() {
@@ -112,6 +119,7 @@ public class ScanBarActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(ScanBarActivity.this, ScanActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -182,7 +190,7 @@ public class ScanBarActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(ScanBarActivity.this, res.getString(R.string.jpcnc), Toast.LENGTH_LONG).show();
+                            // Toast.makeText(ScanBarActivity.this, res.getString(R.string.jpcnc), Toast.LENGTH_LONG).show();
                         }
                     });
 
@@ -192,7 +200,7 @@ public class ScanBarActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(ScanBarActivity.this, res.getString(R.string.jpcnc), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(ScanBarActivity.this, res.getString(R.string.jpcnc), Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -315,6 +323,7 @@ public class ScanBarActivity extends AppCompatActivity {
 
         }
     }
+
     private void loadLanguage() {
         Locale locale = new Locale(getLangCode());
         Locale.setDefault(locale);
@@ -328,6 +337,7 @@ public class ScanBarActivity extends AppCompatActivity {
         String langCode = preferences.getString(KEY_LANG, "en");
         return langCode;
     }
+
     protected boolean isJSONValid(String callReoprtResponse2) {
         // TODO Auto-generated method stub
         try {

@@ -72,6 +72,7 @@ public class RegisterNGetStartActivity extends AppCompatActivity {
     Resources res;
     private static final String FILE_NAME = "file_lang";
     private static final String KEY_LANG = "key_lang";
+    private EditText editText1, editText2, editText3, editText4, editText5, editText6, editText7, editText8, editText9;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +94,15 @@ public class RegisterNGetStartActivity extends AppCompatActivity {
         failCode = (TextView) findViewById(R.id.failCode);
         successCode = (TextView) findViewById(R.id.successCode);
         usedCode = (TextView) findViewById(R.id.usedCode);
+        editText1 = (EditText) findViewById(R.id.editText1);
+        editText2 = (EditText) findViewById(R.id.editText2);
+        editText3 = (EditText) findViewById(R.id.editText3);
+        editText4 = (EditText) findViewById(R.id.editText4);
+        editText5 = (EditText) findViewById(R.id.editText5);
+        editText6 = (EditText) findViewById(R.id.editText6);
+        editText7 = (EditText) findViewById(R.id.editText7);
+        editText8 = (EditText) findViewById(R.id.editText8);
+        editText9 = (EditText) findViewById(R.id.editText9);
         tnc = (TextView) findViewById(R.id.tnc);
         ccp = (CountryCodePicker) findViewById(R.id.ccp);
         ccp.registerCarrierNumberEditText(u_mobile);
@@ -102,6 +112,15 @@ public class RegisterNGetStartActivity extends AppCompatActivity {
         ccp.setCountryPreference(ccp.getDefaultCountryNameCode());
         prefEditor.putString("country_code", ccp.getSelectedCountryCodeWithPlus());
         prefEditor.commit();
+        ccp.setOnCountryChangeListener(new CountryCodePicker.OnCountryChangeListener() {
+            @Override
+            public void onCountrySelected() {
+                //  String CountryCode = Locale.getDefault().getCountry();
+                //  Toast.makeText(getApplicationContext(), "Updated " + CountryCode, Toast.LENGTH_SHORT).show();
+                prefEditor.putString("country_code", ccp.getSelectedCountryCodeWithPlus());
+                prefEditor.commit();
+            }
+        });
         ccp.setPhoneNumberValidityChangeListener(new CountryCodePicker.PhoneNumberValidityChangeListener() {
             @Override
             public void onValidityChanged(boolean isValidNumber) {
@@ -118,6 +137,208 @@ public class RegisterNGetStartActivity extends AppCompatActivity {
             }
         });
         deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        editText1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editText1.getText().toString().length() == 1) {
+                    editText2.requestFocus();
+                }
+            }
+        });
+
+        editText2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (editText2.getText().toString().length() == 0) {
+                    editText1.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editText2.getText().toString().length() == 1) {
+                    editText3.requestFocus();
+                }
+            }
+        });
+
+        editText3.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (editText3.getText().toString().length() == 0) {
+                    editText2.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editText3.getText().toString().length() == 1) {
+                    editText4.requestFocus();
+                }
+            }
+        });
+
+        editText4.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (editText4.getText().toString().length() == 0) {
+                    editText3.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editText4.getText().toString().length() == 1) {
+                    editText5.requestFocus();
+                }
+                // We can call api to verify the OTP here or on an explicit button click
+                // Toast.makeText(getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
+            }
+        });
+        editText5.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (editText5.getText().toString().length() == 0) {
+                    editText4.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editText5.getText().toString().length() == 1) {
+                    editText6.requestFocus();
+                }
+                // We can call api to verify the OTP here or on an explicit button click
+                // Toast.makeText(getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
+            }
+        });
+        editText6.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (editText6.getText().toString().length() == 0) {
+                    editText5.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editText6.getText().toString().length() == 1) {
+                    editText7.requestFocus();
+                }
+                // We can call api to verify the OTP here or on an explicit button click
+                //  Toast.makeText(getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        editText7.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (editText7.getText().toString().length() == 0) {
+                    editText6.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editText7.getText().toString().length() == 1) {
+                    editText8.requestFocus();
+                }
+                // We can call api to verify the OTP here or on an explicit button click
+                //  Toast.makeText(getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
+            }
+        });
+        editText8.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (editText8.getText().toString().length() == 0) {
+                    editText7.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editText8.getText().toString().length() == 1) {
+                    editText9.requestFocus();
+                }
+                // We can call api to verify the OTP here or on an explicit button click
+                //  Toast.makeText(getApplicationContext(), "Hello", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        editText9.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (editText9.getText().toString().length() == 0) {
+                    editText8.requestFocus();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // We can call api to verify the OTP here or on an explicit button click
+                if (!editText9.getText().toString().equals("")) {
+                    referral_code = editText1.getText().toString() + editText2.getText().toString() + editText3.getText().toString() + editText4.getText().toString() + editText5.getText().toString() + editText6.getText().toString() + editText7.getText().toString() + editText8.getText().toString() + editText9.getText().toString();
+                    new userReferralCode().execute();
+                    //Toast.makeText(getApplicationContext(), referral_code, Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    successCode.setVisibility(View.GONE);
+                    usedCode.setVisibility(View.GONE);
+                    failCode.setVisibility(View.GONE);
+                }
+            }
+        });
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

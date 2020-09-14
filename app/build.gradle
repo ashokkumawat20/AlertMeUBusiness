@@ -7,7 +7,7 @@ android {
         applicationId "in.alertmeu.a4b"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 27
+        versionCode 28
         versionName "1.0.1"
         useLibrary 'org.apache.http.legacy'
         multiDexEnabled true
@@ -37,7 +37,7 @@ android {
             applicationVariants.all { variant ->
 
                 variant.outputs.all {
-                    outputFileName = "AlertMeUBusiness_S_app-${defaultConfig.versionName}v.apk"
+                    outputFileName = "AlertMeUBusiness_P_app-${defaultConfig.versionName}v.apk"
                 }
             }
         }
@@ -61,6 +61,7 @@ dependencies {
     implementation 'com.sun.mail:android-mail:1.5.5'
     implementation 'com.sun.mail:android-activation:1.5.5'
     implementation 'com.github.javiersantos:AppUpdater:2.7'
+    implementation "com.squareup.picasso:picasso:2.4.0"
     // implementation 'com.paypal.sdk:paypal-android-sdk:2.16.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

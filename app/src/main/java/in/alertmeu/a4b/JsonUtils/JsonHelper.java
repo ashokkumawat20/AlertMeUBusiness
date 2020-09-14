@@ -173,6 +173,8 @@ public class JsonHelper {
                 advertisementDAO.setTunit(json_data.getString("tunit"));
                 advertisementDAO.setTsign(json_data.getString("tsign"));
                 advertisementDAO.setActive_user_count(json_data.getString("active_user_count"));
+                advertisementDAO.setBusiness_main_category_hindi(json_data.getString("business_main_category_hindi"));
+                advertisementDAO.setBusiness_subcategory_hindi(json_data.getString("business_subcategory_hindi"));
                 advertisementDAO.setNumbers("" + sequence);
                 advertisementDAOArrayList.add(advertisementDAO);
             }
@@ -203,6 +205,8 @@ public class JsonHelper {
                 locationAdvertisementDAO.setUser_count(object.getString("user_count"));
                 locationAdvertisementDAO.setMaincat_id(object.getString("maincat_id"));
                 locationAdvertisementDAO.setSubbc_id(object.getString("subbc_id"));
+                locationAdvertisementDAO.setMain_image_path(object.getString("main_image_path"));
+                locationAdvertisementDAO.setSub_image_path(object.getString("sub_image_path"));
                 locationAdvertisementDAOArrayList.add(locationAdvertisementDAO);
 
             }
@@ -233,6 +237,7 @@ public class JsonHelper {
                 youTubeDAO.setVideo_description(object.getString("video_description"));
                 youTubeDAO.setVideo_description_hindi(object.getString("video_description_hindi"));
                 youTubeDAO.setVideo_link(object.getString("video_link"));
+                youTubeDAO.setHindi_video_link(object.getString("hindi_video_link"));
                 youTubeDAOArrayList.add(youTubeDAO);
             }
 

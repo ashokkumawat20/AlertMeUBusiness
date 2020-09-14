@@ -522,8 +522,9 @@ public class EditAccountSetupActivity extends AppCompatActivity {
             // Close the progressdialog
             mProgressDialog.dismiss();
             if (status) {
+                Intent setIntent = new Intent(EditAccountSetupActivity.this, BusinessProfileSettingActivity.class);
+                startActivity(setIntent);
                 finish();
-
             }
 
         }
@@ -540,5 +541,14 @@ public class EditAccountSetupActivity extends AppCompatActivity {
         SharedPreferences preferences = getSharedPreferences(FILE_NAME, MODE_PRIVATE);
         String langCode = preferences.getString(KEY_LANG, "en");
         return langCode;
+    }
+    //
+    @Override
+    public void onBackPressed() {
+        // TODO Auto-generated method stub
+        super.onBackPressed();
+        Intent setIntent = new Intent(EditAccountSetupActivity.this, BusinessProfileSettingActivity.class);
+        startActivity(setIntent);
+        finish();
     }
 }

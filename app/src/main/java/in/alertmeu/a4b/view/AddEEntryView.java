@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnKeyListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -68,7 +69,7 @@ public class AddEEntryView extends DialogFragment {
     private static final String username = "email-verification@alertmeu.com";
     private static String password = "ZSAM@2020";
     GMailSender sender;
-
+    Resources res;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO Auto-generated method stub
@@ -77,7 +78,7 @@ public class AddEEntryView extends DialogFragment {
 
         context = getActivity();
         Window window = getDialog().getWindow();
-
+        res = getResources();
         // set "origin" to top left corner, so to speak
         window.setGravity(Gravity.CENTER | Gravity.CENTER);
 
@@ -124,10 +125,10 @@ public class AddEEntryView extends DialogFragment {
 
                     } else {
 
-                        Toast.makeText(context, Constant.INTERNET_MSG, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Code mismatch. Please try again!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), res.getString(R.string.jcodemis), Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -235,9 +236,9 @@ public class AddEEntryView extends DialogFragment {
             // Create a progressdialog
             mProgressDialog = new ProgressDialog(getActivity());
             // Set progressdialog title
-            mProgressDialog.setTitle("Please Wait...");
+            mProgressDialog.setTitle(res.getString(R.string.jpw));
             // Set progressdialog message
-            mProgressDialog.setMessage("Updating...");
+            mProgressDialog.setMessage(res.getString(R.string.jud));
             //mProgressDialog.setIndeterminate(false);
             // Show progressdialog
             mProgressDialog.show();

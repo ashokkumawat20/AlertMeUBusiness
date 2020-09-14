@@ -11,6 +11,7 @@ public class SubCatModeDAO {
     String isselected = "";
     String image_path="";
     private String sequence = "";
+
     private boolean isSelected = false;
 
 
@@ -25,11 +26,12 @@ public class SubCatModeDAO {
 
     }
 
-    public SubCatModeDAO(String id,String bc_id, String subcategory_name, boolean isSelected) {
+    public SubCatModeDAO(String id,String bc_id, String subcategory_name, boolean isSelected,String image_path) {
         this.id = id;
         this.bc_id = bc_id;
         this.subcategory_name = subcategory_name;
         this.isSelected = isSelected;
+        this.image_path = image_path;
     }
 
     public SubCatModeDAO(String id, String bc_id, String subcategory_name, String checked_status, String isselected, String sequence, boolean isSelected) {

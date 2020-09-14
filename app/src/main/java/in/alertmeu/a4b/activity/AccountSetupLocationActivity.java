@@ -718,7 +718,7 @@ public class AccountSetupLocationActivity extends AppCompatActivity implements O
             //Toast.makeText(getApplicationContext(), addBusinessAcountResponse, Toast.LENGTH_SHORT).show();
 
             if (status) {
-                Intent intent = new Intent(AccountSetupLocationActivity.this, BusinessExpandableListViewActivity.class);
+                Intent intent = new Intent(AccountSetupLocationActivity.this, BusinessMainCategoryActivity.class);
                 startActivity(intent);
                 /*if (mArrayUri.size() > 0) {
                     for (int i = 0; i < imagesEncodedList.size(); i++) {
@@ -810,7 +810,7 @@ public class AccountSetupLocationActivity extends AppCompatActivity implements O
                         startActivity(intent);
 
                     }*/
-                    Intent intent = new Intent(AccountSetupLocationActivity.this, BusinessExpandableListViewActivity.class);
+                    Intent intent = new Intent(AccountSetupLocationActivity.this, BusinessMainCategoryActivity.class);
                     startActivity(intent);
 
                 }

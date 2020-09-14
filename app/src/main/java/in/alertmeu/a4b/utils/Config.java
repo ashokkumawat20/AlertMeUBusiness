@@ -75,9 +75,10 @@ public class Config {
     public static final String URL_CHECKINGREFERRALCODE = BASE_URL + "user/checkingReferralCode";
     public static final String URL_GETCOSTBYCAT = BASE_URL + "user/getCostByCat";
     public static final String URL_CHECKINGEMAILADDRESS = BASE_URL + "user/checkingEmailAddress";
-    public static final String URL_GETALLYOUTUBELIST = BASE_URL + "user/getAllYouTubeList";
+    public static final String URL_GETALLYOUTUBELIST = BASE_URL + "user/getAllBusinessYouTubeList";
     public static final String URL_DEACTIVATEADBYID = BASE_URL + "user/deactivateAdById";
     public static final String URL_CHECLUSERREDEEMEDCODE = BASE_URL + "user/checlUserRedeemedCode";
+    public static final String URL_BUSINESSPRECATSYNCDATA = BASE_URL + "user/businessPreCatSyncData";
    // public static final String URL_AlertMeUImage = "https://www.alertmeu.com/LocationImages/";
 
     // Directory name to store captured images

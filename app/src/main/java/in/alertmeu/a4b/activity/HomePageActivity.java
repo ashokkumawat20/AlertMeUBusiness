@@ -208,7 +208,7 @@ public class HomePageActivity extends AppCompatActivity {
                         startActivity(intent);
                     } else {
 
-                        Toast.makeText(getApplicationContext(), Constant.INTERNET_MSG, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
                     }
 
                 }
@@ -220,19 +220,19 @@ public class HomePageActivity extends AppCompatActivity {
 
         } else {
 
-            Toast.makeText(getApplicationContext(), Constant.INTERNET_MSG, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
         }
 
         btnshopPrec.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (AppStatus.getInstance(getApplicationContext()).isOnline()) {
-                    Intent intent = new Intent(HomePageActivity.this, BusinessExpandableListViewActivity.class);
+                    Intent intent = new Intent(HomePageActivity.this, BusinessMainCategoryActivity.class);
                     startActivity(intent);
 
                 } else {
 
-                    Toast.makeText(getApplicationContext(), Constant.INTERNET_MSG, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -264,7 +264,7 @@ public class HomePageActivity extends AppCompatActivity {
                                     new getCurrentUserCountList().execute();
                                 } else {
 
-                                    Toast.makeText(getApplicationContext(), Constant.INTERNET_MSG, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
                                 }
 
 

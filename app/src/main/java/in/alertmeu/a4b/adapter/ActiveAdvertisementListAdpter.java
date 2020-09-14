@@ -32,6 +32,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -214,11 +216,20 @@ public class ActiveAdvertisementListAdpter extends RecyclerView.Adapter<Recycler
         myHolder.totalRedeemed.setTag(position);
         myHolder.barCodeCat.setText(res.getString(R.string.jbcd) + current.getRq_code());
         myHolder.barCodeCat.setTag(position);
-        myHolder.mainCat.setText(res.getString(R.string.jadcat) + current.getBusiness_main_category());
-        myHolder.mainCat.setTag(position);
+        if (preferences.getString("ulang", "").equals("en")) {
+            myHolder.mainCat.setText(res.getString(R.string.jadcat) + current.getBusiness_main_category());
+            myHolder.mainCat.setTag(position);
 
-        myHolder.subCat.setText(res.getString(R.string.jadscat) + current.getBusiness_subcategory());
-        myHolder.subCat.setTag(position);
+            myHolder.subCat.setText(res.getString(R.string.jadscat) + current.getBusiness_subcategory());
+            myHolder.subCat.setTag(position);
+        }
+        else if (preferences.getString("ulang", "").equals("hi")) {
+            myHolder.mainCat.setText(res.getString(R.string.jadcat) + current.getBusiness_main_category_hindi());
+            myHolder.mainCat.setTag(position);
+
+            myHolder.subCat.setText(res.getString(R.string.jadscat) + current.getBusiness_subcategory_hindi());
+            myHolder.subCat.setTag(position);
+        }
         myHolder.txtValidity.setText(parseTime(current.getS_time(), "HH:mm", "hh:mm aa") + " on " + formateDateFromstring("yyyy-MM-dd", "dd-MMM-yyyy", current.getS_date()) + " to " + parseTime(current.getE_time(), "HH:mm", "hh:mm aa") + " on " + formateDateFromstring("yyyy-MM-dd", "dd-MMM-yyyy", current.getE_date()));
         myHolder.txtValidity.setTag(position);
 
@@ -231,8 +242,10 @@ public class ActiveAdvertisementListAdpter extends RecyclerView.Adapter<Recycler
         myHolder.numbers.setTag(position);
         myHolder.DeactivateAd.setTag(position);
 
-        ImageLoader imageLoader = new ImageLoader(context);
-        imageLoader.DisplayImage(current.getOriginal_image_path(), myHolder.imageView);
+       // ImageLoader imageLoader = new ImageLoader(context);
+        //imageLoader.DisplayImage(current.getOriginal_image_path(), myHolder.imageView);
+        Picasso.with(context).load(current.getOriginal_image_path()).noPlaceholder().into((ImageView) myHolder.imageView);
+
         myHolder.imageView.setTag(position);
         myHolder.shareButton.setTag(position);
 
