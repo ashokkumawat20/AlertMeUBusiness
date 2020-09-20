@@ -17,6 +17,8 @@ public class CurrentUserLocationAdvertisementDAO {
     String user_distance = "";
     String user_count = "";
     String numbers = "";
+    String main_image_path = "";
+    String sub_image_path = "";
     private boolean isSelected;
 
     public CurrentUserLocationAdvertisementDAO() {
@@ -174,5 +176,21 @@ public class CurrentUserLocationAdvertisementDAO {
 
     public void setCategory_name_hindi(String category_name_hindi) {
         this.category_name_hindi = category_name_hindi;
+    }
+
+    public String getMain_image_path() {
+        return main_image_path;
+    }
+
+    public void setMain_image_path(String main_image_path) {
+        this.main_image_path = main_image_path;
+    }
+
+    public String getSub_image_path() {
+        return sub_image_path;
+    }
+
+    public void setSub_image_path(String sub_image_path) {
+        this.sub_image_path = sub_image_path;
     }
 }

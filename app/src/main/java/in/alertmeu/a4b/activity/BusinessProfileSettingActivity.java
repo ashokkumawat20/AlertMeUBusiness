@@ -485,6 +485,17 @@ public class BusinessProfileSettingActivity extends AppCompatActivity {
         pickPhoto.setType("image/*");
         startActivityForResult(pickPhoto, PICK_IMAGE_MULTIPLE);
 
+        /*Intent getIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        getIntent.setType("image/*");
+
+        Intent pickIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
+
+        Intent chooserIntent = Intent.createChooser(getIntent, "Select Image");
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{pickIntent});
+
+        startActivityForResult(chooserIntent, PICK_IMAGE_MULTIPLE);*/
+
     }
 
     private void cameraIntent() {
@@ -520,7 +531,7 @@ public class BusinessProfileSettingActivity extends AppCompatActivity {
 
                     Uri mImageUri = data.getData();
                     mArrayUri.add(mImageUri);
-                    if (!mImageUri.toString().contains("content://com.google.android.apps.docs")) {
+                    if (!mImageUri.toString().contains("mediakey")) {
                         // Get the cursor
                         Cursor cursor = getContentResolver().query(mImageUri, filePathColumn, null, null, null);
                         // Move to first row

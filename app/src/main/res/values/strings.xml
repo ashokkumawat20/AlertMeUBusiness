@@ -173,7 +173,7 @@
 
     <string name="action_funds_added">Funds Added</string>
     <string name="action_advertisements">Advertisements</string>
-
+    <string name="action_refund">Refund</string>
     <string name="click">Please select at least one category</string>
     <string name="regReferralDesc">Please enter valid Referral Code</string>
     <string name="regAllReferralDesc">Another business or user registered on this device with a referral code. Please use a different device to use referral code.</string>
@@ -213,7 +213,7 @@
     <string name="xsub">Submit</string>
     <string name="xsearch">Search...</string>
     <string name="xclose">Close</string>
-    <string name="xsop">*** Special Introductory Promotion ***\n Your ads are free for a limited time.</string>
+    <string name="xsop">*** Special Introductory Promotion ***\n 50% discount on all your ads for 30 days!</string>
     <string name="xscp">Select categories to create an advertisement.</string>
     <string name="xlmv">Learn More</string>
     <string name="xsi">Sign In</string>
@@ -369,4 +369,6 @@
     <string name="jdlks">Dislikes </string>
     <string name="jevmn">Please Enter valid mobile number.</string>
     <string name="swith">Share Video with</string>
+    <string name="jall">All</string>
+    <string name="website"><u>www.alertmeu.com</u></string>
 </resources>

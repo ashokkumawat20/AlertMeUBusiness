@@ -154,15 +154,15 @@ public class MyAccountActivity extends AppCompatActivity {
                         JSONObject jObject = new JSONObject(balanceAmountResponse);
                         status = jObject.getBoolean("status");
                         if (status) {
-                            JSONArray introJsonArray = jObject.getJSONArray("balanceamount");
+                            /*JSONArray introJsonArray = jObject.getJSONArray("balanceamount");
                             for (int i = 0; i < introJsonArray.length(); i++) {
                                 JSONObject introJsonObject = introJsonArray.getJSONObject(i);
                                 balance_amount = introJsonObject.getString("balance_amount");
-                            }
-
+                            }*/
+                            balance_amount = jObject.getString("balanceamount");
 
                         } else {
-
+                            balance_amount="0";
                         }
 
 

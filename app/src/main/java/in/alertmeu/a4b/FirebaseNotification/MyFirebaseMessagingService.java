@@ -10,14 +10,19 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.concurrent.TimeUnit;
+
 import in.alertmeu.a4b.Fragments.TabsFragmentActivity;
 import in.alertmeu.a4b.activity.HomePageActivity;
+import in.alertmeu.a4b.activity.LSelectActivity;
+import in.alertmeu.a4b.activity.LSplashScreenActivity;
+import in.alertmeu.a4b.activity.SplashActivity;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
-
+    Intent intent = null;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         if (remoteMessage.getData().size() > 0) {
@@ -48,23 +53,44 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             //creating MyNotificationManager object
             MyNotificationManager mNotificationManager = new MyNotificationManager(getApplicationContext());
-            Intent intent = null;
+
             //creating an intent for the notification
             if (title.equals("Users Alert")) {
                // intent = new Intent(getApplicationContext(), MapsActivity.class);
             }
-
             if (title.equals("Expiring Advertisement")) {
                 intent = new Intent(getApplicationContext(), TabsFragmentActivity.class);
                 intent.putExtra("active", 0);
             }
-
+            if (title.equals("Your ad has expired")) {
+                intent = new Intent(getApplicationContext(), TabsFragmentActivity.class);
+                intent.putExtra("active", 1);
+            }
 
 
             //if there is no image
             if (imageUrl.equals("null")) {
                 //displaying small notification
-                mNotificationManager.showSmallNotification(title, message, intent);
+                if (title.equals("Your ad has expired")) {
+
+                    /****** Create Thread that will sleep for 5 seconds****/
+                    Thread background = new Thread() {
+                        public void run() {
+                            try {
+                                // Thread will sleep for 5 seconds
+                                sleep(60 * 1000);
+                                mNotificationManager.showSmallNotification(title, message, intent);
+                            } catch (Exception e) {
+                            }
+                        }
+                    };
+                    // start thread
+                    background.start();
+                }
+                else
+                {
+                    mNotificationManager.showSmallNotification(title, message, intent);
+                }
             } else {
                 //if there is an image
                 //displaying a big notification

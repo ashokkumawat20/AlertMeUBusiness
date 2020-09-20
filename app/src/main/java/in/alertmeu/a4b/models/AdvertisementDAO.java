@@ -28,6 +28,8 @@ public class AdvertisementDAO {
     String tunit="";
     String tsign="";
     String active_user_count="";
+    String business_main_category_hindi="";
+    String business_subcategory_hindi="";
     private boolean isSelected;
 
     public AdvertisementDAO() {
@@ -286,5 +288,21 @@ public class AdvertisementDAO {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public String getBusiness_main_category_hindi() {
+        return business_main_category_hindi;
+    }
+
+    public void setBusiness_main_category_hindi(String business_main_category_hindi) {
+        this.business_main_category_hindi = business_main_category_hindi;
+    }
+
+    public String getBusiness_subcategory_hindi() {
+        return business_subcategory_hindi;
+    }
+
+    public void setBusiness_subcategory_hindi(String business_subcategory_hindi) {
+        this.business_subcategory_hindi = business_subcategory_hindi;
     }
 }

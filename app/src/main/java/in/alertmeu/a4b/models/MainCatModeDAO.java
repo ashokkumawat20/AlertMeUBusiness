@@ -14,6 +14,11 @@ public class MainCatModeDAO {
     String isselected = "";
     String image_path="";
     String checked_status = "";
+    private String notification_charge;
+    private String price_formula;
+    private String rounding_scale;
+    private String special_message;
+    private String special_message_hindi;
     private boolean isSelected = false;
     private ArrayList<SubCatModeDAO> list = new ArrayList<SubCatModeDAO>();
 
@@ -27,14 +32,19 @@ public class MainCatModeDAO {
 
     }
 
-    public MainCatModeDAO(String id, String category_name, String currency_sign, String ads_pricing, String discount) {
+
+
+    public MainCatModeDAO(String id, String category_name, String currency_sign, String ads_pricing, String discount, String notification_charge, String price_formula, String rounding_scale, String special_message) {
         this.id = id;
         this.category_name = category_name;
         this.currency_sign = currency_sign;
         this.ads_pricing = ads_pricing;
         this.discount = discount;
+        this.notification_charge = notification_charge;
+        this.price_formula = price_formula;
+        this.rounding_scale = rounding_scale;
+        this.special_message = special_message;
     }
-
 
     public MainCatModeDAO(String id, String category_name, String isselected, String checked_status, boolean isSelected, ArrayList<SubCatModeDAO> list) {
         this.id = id;
@@ -142,6 +152,46 @@ public class MainCatModeDAO {
         this.image_path = image_path;
     }
 
+    public String getNotification_charge() {
+        return notification_charge;
+    }
+
+    public void setNotification_charge(String notification_charge) {
+        this.notification_charge = notification_charge;
+    }
+
+    public String getPrice_formula() {
+        return price_formula;
+    }
+
+    public void setPrice_formula(String price_formula) {
+        this.price_formula = price_formula;
+    }
+
+    public String getRounding_scale() {
+        return rounding_scale;
+    }
+
+    public void setRounding_scale(String rounding_scale) {
+        this.rounding_scale = rounding_scale;
+    }
+
+    public String getSpecial_message() {
+        return special_message;
+    }
+
+    public void setSpecial_message(String special_message) {
+        this.special_message = special_message;
+    }
+
+    public String getSpecial_message_hindi() {
+        return special_message_hindi;
+    }
+
+    public void setSpecial_message_hindi(String special_message_hindi) {
+        this.special_message_hindi = special_message_hindi;
+    }
+
     @Override
     public String toString() {
         return category_name;
@@ -156,4 +206,5 @@ public class MainCatModeDAO {
 
         return false;
     }
+
 }

@@ -14,5 +14,8 @@
         android:orderInCategory="10"
         android:title="@string/action_advertisements"
         app:showAsAction="never"/>
-
+    <item android:id="@+id/action_refund"
+        android:orderInCategory="10"
+        android:title="@string/action_refund"
+        app:showAsAction="never"/>
 </menu>

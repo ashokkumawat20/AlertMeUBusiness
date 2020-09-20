@@ -88,6 +88,7 @@ public class ActiveAdvertisementListAdpter extends RecyclerView.Adapter<Recycler
     private static final String FILE_NAME = "file_lang";
     private static final String KEY_LANG = "key_lang";
 
+
     // create constructor to innitilize context and data sent from MainActivity
     public ActiveAdvertisementListAdpter(Context context, List<AdvertisementDAO> data) {
         this.context = context;
@@ -157,13 +158,14 @@ public class ActiveAdvertisementListAdpter extends RecyclerView.Adapter<Recycler
                     } else {
 
                         handler.removeCallbacks(runnable);
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
-        handler.postDelayed(runnable, 0);
+        handler.postDelayed(runnable, 100);
         myHolder.title.setText(current.getTitle());
         myHolder.title.setTag(position);
         if (current.getLikecnt().equals("1")) {

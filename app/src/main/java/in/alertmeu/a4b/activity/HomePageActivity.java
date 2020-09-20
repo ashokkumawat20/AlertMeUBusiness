@@ -96,6 +96,7 @@ public class HomePageActivity extends AppCompatActivity {
     Resources res;
     private static final String FILE_NAME = "file_lang";
     private static final String KEY_LANG = "key_lang";
+    int clc = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -187,7 +188,10 @@ public class HomePageActivity extends AppCompatActivity {
         postAds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkCatByBId();
+                if (clc == 0) {
+                    checkCatByBId();
+                    clc++;
+                }
             }
         });
 
@@ -603,14 +607,16 @@ public class HomePageActivity extends AppCompatActivity {
                                                 prefEditor.putString("editflag", "1");
                                                 prefEditor.commit();
                                                 startActivity(intent);
+                                                clc=0;
                                             } else {
                                                 Intent intent = new Intent(HomePageActivity.this, TabsFragmentActivity.class);
                                                 intent.putExtra("active", 2);
                                                 startActivity(intent);
+                                                clc=0;
                                             }
 
                                         } else {
-                                            Toast.makeText(getApplicationContext(), res.getString(R.string.jpsaoc), Toast.LENGTH_SHORT).show();
+                                           // Toast.makeText(getApplicationContext(), res.getString(R.string.jpsaoc), Toast.LENGTH_SHORT).show();
 
                                         }
                                     } catch (JSONException e) {

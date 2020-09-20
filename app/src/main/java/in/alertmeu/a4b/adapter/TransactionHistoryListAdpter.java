@@ -95,7 +95,7 @@ public class TransactionHistoryListAdpter extends RecyclerView.Adapter<RecyclerV
         final MyHolder myHolder = (MyHolder) holder;
 
         current = data.get(position);
-        myHolder.datetime.setText(formateDateFromstring("yyyy-MM-dd hh:mm:ss", "dd-MMM-yyyy hh:mm:ss a", current.getDate_time()));
+        myHolder.datetime.setText(formateDateFromstring("yyyy-MM-dd HH:mm:ss", "dd-MMM-yyyy hh:mm:ss aa", current.getDate_time()));
         myHolder.datetime.setTag(position);
         if (current.getDescription().contains("Ad #")) {
             myHolder.desc.setText(current.getDescription());

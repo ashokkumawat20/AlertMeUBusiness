@@ -79,7 +79,7 @@
     <string name = "homeTilte"> विज्ञापन </string>
     <string name = "homeTilteDesc"> आपके पास के ग्राहक</string>
     <string name = "homeDesc1"> </string>
-    <string name = "homeDesc2"> उपरोक्त श्रेणियों का चयन करें और अपने ऑफ़र में रुचि रखने वाले दुकानदारों को विज्ञापन भेजें। </string>
+    <string name = "homeDesc2"> उपरोक्त श्रेणियों का चयन करें और आपके ऑफ़र में रुचि रखने वाले ग्राहकों को विज्ञापन भेजें। </string>
 
     <!--Settings -->
     <string name = "setmyprec"> मेरा व्यवसाय श्रेणियाँ </string>
@@ -175,7 +175,7 @@
 
     <string name = "action_funds_added"> धन जोड़ा गया </string>
     <string name = "action_advertisements"> विज्ञापन </string>
-
+    <string name="action_refund">धन लौटाना</string>
     <string name = "click"> कृपया कम से कम एक श्रेणी चुनें </string>
     <string name = "regReferralDesc"> मान्य रेफ़रल कोड दर्ज करें </string>
     <string name = "regAllReferralDesc"> एक अन्य व्यवसाय या उपयोगकर्ता इस डिवाइस पर एक रेफरल कोड के साथ रजिस्टर्ड है। कृपया रेफरल कोड का उपयोग करने के लिए एक अलग डिवाइस का उपयोग करें। </string>
@@ -215,7 +215,7 @@
     <string name = "xsub"> सबमिट करें </string>
     <string name = "xsearch"> खोजें... </string>
     <string name = "xclose"> बंद करें </string>
-    <string name = "xsop"> *** आपके लिए विशेष ऑफर *** \n आपके विज्ञापन सीमित समय के लिए निःशुल्क हैं। </string>
+    <string name = "xsop"> *** आपके लिए विशेष ऑफर *** \n 30 दिनों तक सभी विज्ञापनों पर 50% की छूट ! </string>
     <string name = "xscp"> विज्ञापन बनाने के लिए श्रेणियों का चयन करें। </string>
     <string name = "xlmv"> और जानें </string>
     <string name = "xsi"> लॉगिन </string>
@@ -368,6 +368,8 @@
     <string name="jdlks">नापसन्द </string>
     <string name="jevmn"> कृपया मान्य मोबाइल नंबर दर्ज करें। </string>
     <string name="swith">वीडियो शेयर करें :</string>
+    <string name="jall">सब</string>
+    <string name="website"><u>www.alertmeu.com</u></string>
 </resources>
     <!--
         क्यू आर कोड बन रहा है

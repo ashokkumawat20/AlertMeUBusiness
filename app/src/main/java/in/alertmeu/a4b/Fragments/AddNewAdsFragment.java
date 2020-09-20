@@ -91,7 +91,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.KeyStore;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -109,6 +112,8 @@ import java.util.Set;
 import in.alertmeu.a4b.R;
 import in.alertmeu.a4b.activity.AdsPreviewActivity;
 import in.alertmeu.a4b.activity.EditAdsPreviewActivity;
+import in.alertmeu.a4b.activity.MainActivity;
+import in.alertmeu.a4b.activity.RegisterNGetStartActivity;
 import in.alertmeu.a4b.adapter.AdsSubCatListAdpter;
 import in.alertmeu.a4b.adapter.GridViewAdapter;
 import in.alertmeu.a4b.adapter.SubCatListAdpter;
@@ -134,13 +139,14 @@ public class AddNewAdsFragment extends Fragment {
     SharedPreferences preferences;
     SharedPreferences.Editor prefEditor;
     ProgressDialog mProgressDialog;
+    ProgressDialog mProgressDialog1;
     JSONObject jsonLeadObj, jsonLeadObj1, syncJsonObject, jsonObjectSync, jsonNotifyObj, jsonObject, jsonObj;
     JSONArray jsonArray, jsonArraySync;
     String alertResponse = "", alertSubResponse = "", bc_id = "", sub_id = "", syncDataesponse = "", balanceAmountResponse = "";
     ArrayList<MainCatModeDAO> mainCatModeDAOArrayList;
     ArrayList<SubCatModeDAO> subCatModeDAOArrayList;
     EditText edttitle, edtDescpritipon, describeLimitations, startTime, expectedDate;
-    String title = "", description = "", response = "", qrCodeResponse = "", main_cat = "", editfalg = "", bid = "", image_path = "", deleteLogoResponse = "", cost = "";
+    String title = "", description = "", response = "", qrCodeResponse = "", main_cat = "", editfalg = "", bid = "", image_path = "", deleteLogoResponse = "", cost = "", AmountResponse = "";
     View v;
     Button takePhotoCamera, takePhotoGallery, genRateQRCode, btnnext;
     String userChoosenTask = "";
@@ -181,12 +187,12 @@ public class AddNewAdsFragment extends Fragment {
     ArrayList<DateTimeDAO> selectTime = new ArrayList<DateTimeDAO>();
     ArrayList<RunAddDAO> runAdd = new ArrayList<RunAddDAO>();
     boolean status, status2;
-    int count = 0;
-    double discount;
+    int count = 0,  rounding_scale;
+    double discount, notification_charge;
     public ArrayList<String> map = new ArrayList<String>();
     JSONObject jsonLeadObjReq;
 
-    String addImageLocationResponse = "", message = "", id = "", addRequestAttachResponse = "", describe_limitations = "";
+    String addImageLocationResponse = "", message = "", id = "", addRequestAttachResponse = "", describe_limitations = "", price_formula="",special_message = "";
 
     MultipartEntity entity;
     CheckBox cmyList, cshowOnMap, cnearByClients;
@@ -201,10 +207,10 @@ public class AddNewAdsFragment extends Fragment {
     ArrayList<String> subCatAList = null;
     int i;
     //time calculations
-    String tunit = "", tunit1 = "", stime = "", sdate = "", tsign = "", edate = "", etime = "", totalamount = "", openflag = "0", repost = "", currency_sign = "", n_flag = "1";
+    String tunit = "", tunit1 = "", stime = "", sdate = "", tsign = "", edate = "", etime = "", totalamount = "", openflag = "0", repost = "", currency_sign = "", n_flag = "1", balance_amount = "0.0";
     Date date;
     int thours = 0;
-    TextView tamount;
+    TextView tamount,sprice;
     ArrayAdapter<RunAddDAO> adapterRunAdd;
     Spinner spinnerRunAdd;
     LinearLayout showHideLayout, linkClick;
@@ -217,6 +223,7 @@ public class AddNewAdsFragment extends Fragment {
     Resources res;
     private static final String FILE_NAME = "file_lang";
     private static final String KEY_LANG = "key_lang";
+    InitSubCategorySpinner asyncTask = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -258,6 +265,7 @@ public class AddNewAdsFragment extends Fragment {
         startTime = (EditText) v.findViewById(R.id.startTime);
         expectedDate = (EditText) v.findViewById(R.id.expectedDate);
         tamount = (TextView) v.findViewById(R.id.tamount);
+        sprice= (TextView) v.findViewById(R.id.sprice);
         catHideShow = (TextView) v.findViewById(R.id.catHideShow);
         btnnext = (Button) v.findViewById(R.id.btnnext);
         showHideLayout = (LinearLayout) v.findViewById(R.id.showHideLayout);
@@ -286,8 +294,7 @@ public class AddNewAdsFragment extends Fragment {
 
             }
 
-
-            edttitle.setText(preferences.getString("title", ""));
+             edttitle.setText(preferences.getString("title", ""));
             edtDescpritipon.setText(preferences.getString("description", ""));
             describeLimitations.setText(preferences.getString("limitations", ""));
             bid = preferences.getString("bid", "");
@@ -466,7 +473,7 @@ public class AddNewAdsFragment extends Fragment {
         runAdd.add(new RunAddDAO("6", "6 " + res.getString(R.string.jhrss)));
         runAdd.add(new RunAddDAO("8", "8 " + res.getString(R.string.jhrss)));
         runAdd.add(new RunAddDAO("12", "12 " + res.getString(R.string.jhrss)));
-        runAdd.add(new RunAddDAO("18", "18 " + res.getString(R.string.jhrss)));
+        runAdd.add(new RunAddDAO("16", "16 " + res.getString(R.string.jhrss)));
         runAdd.add(new RunAddDAO("24", "24 " + res.getString(R.string.jhrss)));
         runAdd.add(new RunAddDAO("2", "2 " + res.getString(R.string.xday)));
         runAdd.add(new RunAddDAO("1", "1 " + res.getString(R.string.jweek)));
@@ -649,11 +656,37 @@ public class AddNewAdsFragment extends Fragment {
                         etime = tdf.format(cal.getTime());
                         //  Toast.makeText(getActivity(), "end date " + edate + " end time " + etime, Toast.LENGTH_SHORT).show();
 
-                        if (AppStatus.getInstance(getActivity()).isOnline()) {
+                        /*if (AppStatus.getInstance(getActivity()).isOnline()) {
                             new dueFeesAvailable().execute();
                         } else {
 
-                            Toast.makeText(getActivity(), Constant.INTERNET_MSG, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
+                        }*/
+
+                        if(discount>0) {
+
+                            BigDecimal bd = new BigDecimal((Math.sqrt(thours) * rate)*((100-discount)/100)).setScale(rounding_scale, RoundingMode.HALF_UP);
+                            cost = "" + bd.doubleValue();
+                            sprice.setVisibility(View.VISIBLE);
+                            sprice.setText(special_message);
+                        }
+                        else
+                        {
+                            sprice.setVisibility(View.GONE);
+                            BigDecimal bd = new BigDecimal(Math.sqrt(thours) * rate ).setScale(rounding_scale, RoundingMode.HALF_UP);
+                            cost = "" + bd.doubleValue();
+                        }
+
+                       // cost=""+(Math.round(Math.sqrt(thours)*rate+notification_charge*10));
+                        if (preferences.getInt("provalid", 0) == 0) {
+                            totalamount = cost;
+                            tamount.setText(res.getString(R.string.jtai) +" "+ currency_sign + (totalamount));
+
+                        } else {
+                            BigDecimal bd = new BigDecimal(Double.parseDouble(cost) * .5 ).setScale(rounding_scale, RoundingMode.HALF_UP);
+                            totalamount = "" + bd.doubleValue();
+                          //  totalamount = "" + (Double.parseDouble(cost) * .5).setScale(rounding_scale, RoundingMode.HALF_UP);
+                            tamount.setText(res.getString(R.string.jtai) +" "+ currency_sign + (totalamount));
                         }
                     }
                 } else {
@@ -790,6 +823,7 @@ public class AddNewAdsFragment extends Fragment {
                             intent.putExtra("tunit1", tunit1);
                             intent.putExtra("tsign", tsign);
                             intent.putExtra("nflag", n_flag);
+                            intent.putExtra("balance_amount", balance_amount);
                             intent.putExtra("thours", "" + thours);
                             startActivity(intent);
                         } else {
@@ -850,6 +884,7 @@ public class AddNewAdsFragment extends Fragment {
                             intent.putExtra("tunit1", tunit1);
                             intent.putExtra("tsign", tsign);
                             intent.putExtra("nflag", n_flag);
+                            intent.putExtra("balance_amount", balance_amount);
                             intent.putExtra("thours", "" + thours);
                             startActivity(intent);
                         } else {
@@ -985,7 +1020,7 @@ public class AddNewAdsFragment extends Fragment {
 
         Intent pickPhoto = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-       // pickPhoto.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        // pickPhoto.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         pickPhoto.setType("image/*");
         startActivityForResult(pickPhoto, PICK_IMAGE_MULTIPLE);
 
@@ -1053,7 +1088,7 @@ public class AddNewAdsFragment extends Fragment {
             // When an Image is picked
             if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == getActivity().RESULT_OK && null != data) {
                 // Get the Image from data
-
+                //  Toast.makeText(getActivity(), ""+data.getData(), Toast.LENGTH_LONG).show();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
                 if (data.getData() != null) {
@@ -1061,7 +1096,7 @@ public class AddNewAdsFragment extends Fragment {
                     imagesEncodedList = new ArrayList<String>();
                     Uri mImageUri = data.getData();
                     mArrayUri.add(mImageUri);
-                    if (!mImageUri.toString().contains("content://com.google.android.apps.docs")) {
+                    if (!mImageUri.toString().contains("mediakey")) {
                         // Get the cursor
                         Cursor cursor = getActivity().getContentResolver().query(mImageUri, filePathColumn, null, null, null);
                         // Move to first row
@@ -1402,14 +1437,14 @@ public class AddNewAdsFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             // Create a progressdialog
-            mProgressDialog = new ProgressDialog(getActivity());
+            // mProgressDialog = new ProgressDialog(getActivity());
             // Set progressdialog title
-            mProgressDialog.setTitle(res.getString(R.string.jpw));
+            // mProgressDialog.setTitle(res.getString(R.string.jpw));
             // Set progressdialog message
-            mProgressDialog.setMessage(res.getString(R.string.jsql));
+            // mProgressDialog.setMessage(res.getString(R.string.jsql));
             //mProgressDialog.setIndeterminate(false);
             // Show progressdialog
-            mProgressDialog.show();
+            // mProgressDialog.show();
         }
 
         @Override
@@ -1430,6 +1465,36 @@ public class AddNewAdsFragment extends Fragment {
             WebClient serviceAccess = new WebClient();
             Log.i("json", "json" + jsonLeadObj);
             alertResponse = serviceAccess.SendHttpPost(Config.URL_GETALLMAINCATEGORYBYBUSINESSUSER, jsonLeadObj);
+            JSONObject jsonObja = new JSONObject() {
+                {
+                    try {
+                        put("business_user_id", preferences.getString("business_user_id", ""));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            AmountResponse = serviceAccess.SendHttpPost(Config.URL_GETBALANCEAMOUNT, jsonObja);
+            Log.i("resp", "AmountResponse" + AmountResponse);
+            if (isJSONValid(AmountResponse)) {
+                // JSONArray leadJsonObj = null;
+                try {
+                    JSONObject jObject = new JSONObject(AmountResponse);
+                    status = jObject.getBoolean("status");
+                    if (status) {
+                        balance_amount = jObject.getString("balanceamount");
+                    } else {
+                        balance_amount = "0.0";
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
             mainCatModeDAOArrayList = new ArrayList<>();
             Log.i("resp", "alertResponse" + alertResponse);
             if (alertResponse.compareTo("") != 0) {
@@ -1448,9 +1513,9 @@ public class AddNewAdsFragment extends Fragment {
                                 for (int i = 0; i < LeadSourceJsonObj.length(); i++) {
                                     JSONObject json_data = LeadSourceJsonObj.getJSONObject(i);
                                     if (preferences.getString("ulang", "").equals("en")) {
-                                        mainCatModeDAOArrayList.add(new MainCatModeDAO(json_data.getString("id"), json_data.getString("category_name"), json_data.getString("currency_sign"), json_data.getString("ads_pricing"), json_data.getString("discount")));
+                                        mainCatModeDAOArrayList.add(new MainCatModeDAO(json_data.getString("id"), json_data.getString("category_name"), json_data.getString("currency_sign"), json_data.getString("ads_pricing"), json_data.getString("discount"), json_data.getString("notification_charge"), json_data.getString("price_formula"), json_data.getString("rounding_scale"), json_data.getString("special_message")));
                                     } else if (preferences.getString("ulang", "").equals("hi")) {
-                                        mainCatModeDAOArrayList.add(new MainCatModeDAO(json_data.getString("id"), json_data.getString("category_name_hindi"), json_data.getString("currency_sign"), json_data.getString("ads_pricing"), json_data.getString("discount")));
+                                        mainCatModeDAOArrayList.add(new MainCatModeDAO(json_data.getString("id"), json_data.getString("category_name_hindi"), json_data.getString("currency_sign"), json_data.getString("ads_pricing"), json_data.getString("discount"), json_data.getString("notification_charge"), json_data.getString("price_formula"), json_data.getString("rounding_scale"), json_data.getString("special_message_hindi")));
                                     }
 
                                 }
@@ -1490,7 +1555,7 @@ public class AddNewAdsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void args) {
-            mProgressDialog.dismiss();
+            // mProgressDialog.dismiss();
             if (mainCatModeDAOArrayList.size() > 0) {
                 catHideShow.setVisibility(View.GONE);
                 showHideLayout.setVisibility(View.VISIBLE);
@@ -1522,18 +1587,30 @@ public class AddNewAdsFragment extends Fragment {
                             // takePhotoGallery.setVisibility(View.VISIBLE);
                             //takePhotoCamera.setVisibility(View.VISIBLE);
                             // uploadbtn.setVisibility(View.VISIBLE);
-                            if (preferences.getInt("provalid", 0) == 0) {
+                            rate = Double.parseDouble(alertTypeDAO.getAds_pricing());
+                            discount = Double.parseDouble(alertTypeDAO.getDiscount());
+                            notification_charge = Double.parseDouble(alertTypeDAO.getNotification_charge());
+                            price_formula = alertTypeDAO.getPrice_formula();
+                            rounding_scale = Integer.parseInt(alertTypeDAO.getRounding_scale());
+                            if (preferences.getString("ulang", "").equals("en")) {
+                                special_message = alertTypeDAO.getSpecial_message();
+                            } else if (preferences.getString("ulang", "").equals("hi")) {
+                                special_message = alertTypeDAO.getSpecial_message();
+                            }
+                           /* if (preferences.getInt("provalid", 0) == 0) {
                                 rate = Double.parseDouble(alertTypeDAO.getAds_pricing());
                                 discount = Double.parseDouble(alertTypeDAO.getDiscount());
                             } else {
                                 rate = 0.0;
                                 discount = 0.0;
-                            }
+                            }*/
                             currency_sign = alertTypeDAO.getCurrency_sign();
                             prefEditor.putString("currency_sign", currency_sign);
                             prefEditor.commit();
                             edttitle.setText(alertTypeDAO.getCategory_name());
-                            new initSubCategorySpinner().execute();
+                            asyncTask = new InitSubCategorySpinner();
+                            asyncTask.execute();
+                            // new InitSubCategorySpinner().execute();
                         } else {
                             mainCatList.setVisibility(View.GONE);
                             bc_id = "";
@@ -1543,6 +1620,38 @@ public class AddNewAdsFragment extends Fragment {
                             takePhotoGallery.setVisibility(View.GONE);
                             takePhotoCamera.setVisibility(View.GONE);
                             //  uploadbtn.setVisibility(View.GONE);
+                        }
+
+                        if (thours != 0) {
+                          /*  if (AppStatus.getInstance(getActivity()).isOnline()) {
+                                new dueFeesAvailable().execute();
+                            } else {
+
+                                Toast.makeText(getActivity(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
+                            }*/
+                          if(discount>0) {
+                              BigDecimal bd = new BigDecimal((Math.sqrt(thours) * rate)*((100-discount)/100)).setScale(rounding_scale, RoundingMode.HALF_UP);
+                              cost = "" + bd.doubleValue();
+                              sprice.setVisibility(View.VISIBLE);
+                              sprice.setText(special_message);
+                          }
+                          else
+                          {
+                              BigDecimal bd = new BigDecimal(Math.sqrt(thours) * rate ).setScale(rounding_scale, RoundingMode.HALF_UP);
+                              cost = "" + bd.doubleValue();
+                              sprice.setVisibility(View.GONE);
+                          }
+                            //  (Math.sqrt(hours)*ads_pricing + notification_charge * shoppers_nearby)
+                            if (preferences.getInt("provalid", 0) == 0) {
+                                totalamount = cost;
+                                tamount.setText(res.getString(R.string.jtai) +" "+ currency_sign + (totalamount));
+
+                            } else {
+                                BigDecimal bd = new BigDecimal(Double.parseDouble(cost) * .5 ).setScale(rounding_scale, RoundingMode.HALF_UP);
+                                totalamount = "" + bd.doubleValue();
+                              //  totalamount = "" + Double.parseDouble(cost) * .5;
+                                tamount.setText(res.getString(R.string.jtai) + " "+currency_sign + (totalamount));
+                            }
                         }
 
                     }
@@ -1562,7 +1671,7 @@ public class AddNewAdsFragment extends Fragment {
     }
 
     //
-    private class initSubCategorySpinner extends AsyncTask<Void, Void, Void> {
+    private class InitSubCategorySpinner extends AsyncTask<Void, Void, Void> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -1572,6 +1681,8 @@ public class AddNewAdsFragment extends Fragment {
             mProgressDialog.setTitle(res.getString(R.string.jpw));
             // Set progressdialog message
             mProgressDialog.setMessage(res.getString(R.string.jsql));
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCancelable(false);
             //mProgressDialog.setIndeterminate(false);
             // Show progressdialog
             mProgressDialog.show();
@@ -1715,7 +1826,6 @@ public class AddNewAdsFragment extends Fragment {
             mProgressDialog.dismiss();
 
             if (subCatModeDAOArrayList.size() > 0) {
-
                 subCatListAdpter = new AdsSubCatListAdpter(getActivity(), subCatModeDAOArrayList);
                 mainCatList.setAdapter(subCatListAdpter);
                 mainCatList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -2542,7 +2652,13 @@ public class AddNewAdsFragment extends Fragment {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            // Create a progressdialog
+            mProgressDialog1 = new ProgressDialog(getActivity());
+            // Set progressdialog title
+            mProgressDialog1.setTitle(res.getString(R.string.jpw));
+            mProgressDialog1.setIndeterminate(true);
+            mProgressDialog1.setCancelable(false);
+            mProgressDialog1.show();
         }
 
         @Override
@@ -2565,8 +2681,6 @@ public class AddNewAdsFragment extends Fragment {
             Log.i("json", "json" + jsonLeadObj1);
             balanceAmountResponse = serviceAccess.SendHttpPost(Config.URL_GETCOSTBYCAT, jsonObj);
             Log.i("resp", "balanceAmountResponse" + balanceAmountResponse);
-
-
             if (balanceAmountResponse.compareTo("") != 0) {
                 if (isJSONValid(balanceAmountResponse)) {
                     JSONArray leadJsonObj = null;
@@ -2574,15 +2688,9 @@ public class AddNewAdsFragment extends Fragment {
                         JSONObject jObject = new JSONObject(balanceAmountResponse);
                         status = jObject.getBoolean("status");
                         if (status) {
-                            JSONArray introJsonArray = jObject.getJSONArray("balanceamount");
-                            for (int i = 0; i < introJsonArray.length(); i++) {
-                                JSONObject introJsonObject = introJsonArray.getJSONObject(i);
-                                cost = introJsonObject.getString("balance_amount");
-                            }
-
-
+                            cost = jObject.getString("balanceamount");
                         } else {
-
+                            cost = "0.0";
                         }
 
 
@@ -2605,9 +2713,17 @@ public class AddNewAdsFragment extends Fragment {
 
         @Override
         protected void onPostExecute(Void args) {
+            mProgressDialog1.dismiss();
+            if (preferences.getInt("provalid", 0) == 0) {
+                totalamount = cost;
+                tamount.setText(res.getString(R.string.jtai) + currency_sign + (totalamount));
 
-            totalamount = cost;
-            tamount.setText(res.getString(R.string.jtai) + currency_sign + (cost));
+            } else {
+                totalamount = "" + Double.parseDouble(cost) * .5;
+                tamount.setText(res.getString(R.string.jtai) + currency_sign + (totalamount));
+            }
+            //  totalamount =""+ Double.parseDouble(cost);
+            //  tamount.setText(res.getString(R.string.jtai) + currency_sign + (cost));
 
 
         }
@@ -2758,4 +2874,8 @@ public class AddNewAdsFragment extends Fragment {
         config.locale = locale;
         getResources().updateConfiguration(config, getResources().getDisplayMetrics());
     }
+
+    //
+
+
 }

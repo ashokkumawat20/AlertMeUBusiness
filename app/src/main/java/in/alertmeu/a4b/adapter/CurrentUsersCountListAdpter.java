@@ -159,7 +159,7 @@ public class CurrentUsersCountListAdpter extends RecyclerView.Adapter<RecyclerVi
                         contact.setSelected(cb.isChecked());
                         cf++;
                     } else {
-                        Toast.makeText(v.getContext(), res.getString(R.string.jdadsh), Toast.LENGTH_LONG).show();
+                        Toast.makeText(v.getContext(), res.getString(R.string.jdadsh), Toast.LENGTH_SHORT).show();
                         myHolder.chkBox.setChecked(false);
                     }
 
@@ -269,13 +269,13 @@ public class CurrentUsersCountListAdpter extends RecyclerView.Adapter<RecyclerVi
                 } else {
 
 
-                    Toast.makeText(context, res.getString(R.string.jpcnc), Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
 
 
                 }
             } else {
 
-                Toast.makeText(context, res.getString(R.string.jpcnc), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
 
             }
 

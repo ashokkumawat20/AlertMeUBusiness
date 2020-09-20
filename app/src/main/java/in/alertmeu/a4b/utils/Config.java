@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class Config {
 
-    public static final String BASE_URL = "https://www.alertmeu.com/alertmeutest/api/";
-    public static final String URL_AlertMeUImage ="https://www.alertmeu.com/LocationImagesTest/";
-    //public static final String BASE_URL = "https://www.alertmeu.com/alertmeu/api/";
+    //  public static final String BASE_URL = "https://www.alertmeu.com/alertmeutest/api/";
+    //  public static final String URL_AlertMeUImage ="https://www.alertmeu.com/LocationImagesTest/";
+    public static final String BASE_URL = "https://www.alertmeu.com/alertmeu/api/";
     public static final String URL_ADDUSERBYA = BASE_URL + "user/adduserByA";
     public static final String URL_MAILBUSINESSLOGIN = BASE_URL + "user/mailBusinessLogin";
     public static final String URL_ADDBUSINESSDATA = BASE_URL + "user/addBusinessData";
@@ -79,8 +79,8 @@ public class Config {
     public static final String URL_DEACTIVATEADBYID = BASE_URL + "user/deactivateAdById";
     public static final String URL_CHECLUSERREDEEMEDCODE = BASE_URL + "user/checlUserRedeemedCode";
     public static final String URL_BUSINESSPRECATSYNCDATA = BASE_URL + "user/businessPreCatSyncData";
-   // public static final String URL_AlertMeUImage = "https://www.alertmeu.com/LocationImages/";
-
+    public static final String URL_AlertMeUImage = "https://www.alertmeu.com/LocationImages/";
+    public static final String URL_GETSUNOBYC = BASE_URL + "user/getSuNoByC";
     // Directory name to store captured images
     public static final String IMAGE_DIRECTORY_NAME = "AlertMeUBusiness";
 

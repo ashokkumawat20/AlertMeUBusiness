@@ -21,6 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
+            android:visibility="gone"
             android:text="@string/click"
             android:textColor="@color/textcolor"
             android:textSize="25sp"
@@ -153,7 +154,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:text="@string/estcost" />
-
+            <TextView
+                android:id="@+id/sprice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/spacing_xxlarge"
+                android:layout_marginRight="@dimen/spacing_large"
+                android:text=""
+                android:visibility="gone"
+                android:textColor="@color/textcolor"
+                android:textSize="18sp"
+                android:textStyle="bold" />
             <TextView
                 android:id="@+id/tamount"
                 android:layout_width="match_parent"

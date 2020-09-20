@@ -118,6 +118,7 @@ public class EditAdsPreviewActivity extends FragmentActivity implements OnMapRea
     SharedPreferences preferences;
     SharedPreferences.Editor prefEditor;
     ProgressDialog mProgressDialog;
+    ProgressDialog mProgressDialog1;
     JSONObject jsonLeadObj, jsonLeadObj1, syncJsonObject, jsonObjectSync, jsonNotifyObj, jsonLeadObjReq, jsonObj, jsonLeadObjReq1;
     JSONArray jsonArray, jsonArraySync;
     String balance_amount = "", alertSubResponse = "", bc_id = "", sub_id = "", syncDataesponse = "", tamount = "", activeStatus = "";
@@ -134,7 +135,7 @@ public class EditAdsPreviewActivity extends FragmentActivity implements OnMapRea
     double paidamount;
     String filePath;
     String localTime;
-    int thours = 0;
+    int thours = 0,clc=0;
     String h;
     LinearLayout limithideshow, deshideshow;
     Resources res;
@@ -198,6 +199,7 @@ public class EditAdsPreviewActivity extends FragmentActivity implements OnMapRea
         tsign = intent.getStringExtra("tsign");
         n_flag = intent.getStringExtra("nflag");
         thours = Integer.parseInt(intent.getStringExtra("thours"));
+        balance_amount = intent.getStringExtra("balance_amount");
         bid = preferences.getString("bid", "");
         txtTitle.setText(title);
         if (!description.equals("")) {
@@ -266,6 +268,37 @@ public class EditAdsPreviewActivity extends FragmentActivity implements OnMapRea
                 finish();
             }
         });
+
+        try {
+            if (!preferences.getString("previous_amount", "").equals("0")) {
+                Double temp = Double.parseDouble(preferences.getString("previous_amount", ""));
+                balance_amount = "" + (Double.parseDouble(balance_amount) + temp);
+                String a = balance_amount + "(Previous paid amount is=" + preferences.getString("previous_amount", "") + ")";
+                // balance_amount+=Integer.parseInt(preferences.getString("previous_amount",""));
+                txtBalanceAmount.setText(preferences.getString("currency_sign", "") + a);
+            } else {
+                txtBalanceAmount.setText(preferences.getString("currency_sign", "") + balance_amount);
+            }
+            if (Double.parseDouble(balance_amount) > 0.0) {
+                paidamount = (Double.parseDouble(balance_amount) - Double.parseDouble(tamount));
+                if (paidamount >= 0.0) {
+
+                    pay.setVisibility(View.VISIBLE);
+                    addMoney.setVisibility(View.GONE);
+                    txtPayingAmount.setText(preferences.getString("currency_sign", "") + "" + balance_amount + "-" + preferences.getString("currency_sign", "") + tamount + "=" + preferences.getString("currency_sign", "") + (Double.parseDouble(balance_amount) - Double.parseDouble(tamount)));
+                } else {
+
+                    txtPayingAmount.setText(preferences.getString("currency_sign", "") + "" + balance_amount + "-" + preferences.getString("currency_sign", "") + tamount + "=" + preferences.getString("currency_sign", "") + (Double.parseDouble(balance_amount) - Double.parseDouble(tamount)));
+                    pay.setVisibility(View.GONE);
+                    addMoney.setVisibility(View.VISIBLE);
+                }
+
+            } else {
+                pay.setVisibility(View.GONE);
+                addMoney.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception e) {
+        }
         pay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -340,8 +373,10 @@ public class EditAdsPreviewActivity extends FragmentActivity implements OnMapRea
                                             Calendar cal = Calendar.getInstance();
                                             sdate = format1.format(cal.getTime());*/
                                         }
+                                        if(clc==0) {
                                         new addLocationDataDetails().execute();
-
+                                            clc++;
+                                        }
 
                                     }
                                 })
@@ -374,7 +409,10 @@ public class EditAdsPreviewActivity extends FragmentActivity implements OnMapRea
                     notification_status = 0;
                     flag = 1;
                     tamount = "0";
+                    if(clc==0) {
                     new addLocationDataDetails().execute();
+                        clc++;
+                    }
                 } else {
 
                     Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
@@ -413,12 +451,12 @@ public class EditAdsPreviewActivity extends FragmentActivity implements OnMapRea
         }
 
 
-        if (AppStatus.getInstance(getApplicationContext()).isOnline()) {
+    /*    if (AppStatus.getInstance(getApplicationContext()).isOnline()) {
             new dueFeesAvailable().execute();
         } else {
 
             Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
-        }
+        }*/
 
         addMoney.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1204,7 +1242,13 @@ public class EditAdsPreviewActivity extends FragmentActivity implements OnMapRea
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            // Create a progressdialog
+            mProgressDialog1 = new ProgressDialog(EditAdsPreviewActivity.this);
+            // Set progressdialog title
+            mProgressDialog1.setTitle(res.getString(R.string.jpw));
+            mProgressDialog1.setIndeterminate(true);
+            mProgressDialog1.setCancelable(false);
+            mProgressDialog1.show();
         }
 
         @Override
@@ -1226,20 +1270,20 @@ public class EditAdsPreviewActivity extends FragmentActivity implements OnMapRea
 
             if (balanceAmountResponse.compareTo("") != 0) {
                 if (isJSONValid(balanceAmountResponse)) {
-                    JSONArray leadJsonObj = null;
+                   // JSONArray leadJsonObj = null;
                     try {
                         JSONObject jObject = new JSONObject(balanceAmountResponse);
                         status = jObject.getBoolean("status");
                         if (status) {
-                            JSONArray introJsonArray = jObject.getJSONArray("balanceamount");
+                            /*JSONArray introJsonArray = jObject.getJSONArray("balanceamount");
                             for (int i = 0; i < introJsonArray.length(); i++) {
                                 JSONObject introJsonObject = introJsonArray.getJSONObject(i);
                                 balance_amount = introJsonObject.getString("balance_amount");
-                            }
-
+                            }*/
+                            balance_amount = jObject.getString("balanceamount");
 
                         } else {
-
+                            balance_amount="0";
                         }
 
 
@@ -1262,6 +1306,7 @@ public class EditAdsPreviewActivity extends FragmentActivity implements OnMapRea
 
         @Override
         protected void onPostExecute(Void args) {
+            mProgressDialog1.dismiss();
             try {
                 if (!preferences.getString("previous_amount", "").equals("0")) {
                     Double temp = Double.parseDouble(preferences.getString("previous_amount", ""));

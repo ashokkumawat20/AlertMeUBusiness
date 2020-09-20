@@ -156,7 +156,28 @@ public class AllTransactionHistroyActivity extends AppCompatActivity {
                             transactionHistoryListAdpter.notifyDataSetChanged();  // data set changed
 
                         }
+                        else if (item.getTitle().equals(res.getString(R.string.action_refund))) {
+                            final List<TransactionHistoryDAO> filteredList = new ArrayList<TransactionHistoryDAO>();
+                            if (data != null) {
+                                if (data.size() > 0) {
 
+
+                                    for (int i = 0; i < data.size(); i++) {
+                                        String subject = data.get(i).getDescription().toLowerCase();
+                                        if (subject.contains("refund # ")) {
+                                            filteredList.add(data.get(i));
+                                        }
+                                    }
+                                }
+                            }
+
+
+                            transactionHistoryListAdpter = new TransactionHistoryListAdpter(AllTransactionHistroyActivity.this, filteredList);
+                            transactiontList.setAdapter(transactionHistoryListAdpter);
+                            transactiontList.setLayoutManager(new LinearLayoutManager(AllTransactionHistroyActivity.this));
+                            transactionHistoryListAdpter.notifyDataSetChanged();  // data set changed
+
+                        }
 
                         popup.dismiss();
                         return true;

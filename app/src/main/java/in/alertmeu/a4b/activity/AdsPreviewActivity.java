@@ -131,6 +131,7 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
     SharedPreferences preferences;
     SharedPreferences.Editor prefEditor;
     ProgressDialog mProgressDialog;
+    ProgressDialog mProgressDialog1;
     JSONObject jsonLeadObj, jsonLeadObj1, syncJsonObject, jsonObjectSync, jsonNotifyObj, jsonLeadObjReq, jsonObj;
     JSONArray jsonArray, jsonArraySync;
     String balance_amount = "", alertSubResponse = "", bc_id = "", sub_id = "", syncDataesponse = "", tamount = "", activeStatus = "";
@@ -146,12 +147,13 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
     double paidamount;
     String filePath;
     String localTime;
-    int thours = 0;
+    int thours = 0,clc=0;
     String h;
     LinearLayout limithideshow, deshideshow;
     Resources res;
     private static final String FILE_NAME = "file_lang";
     private static final String KEY_LANG = "key_lang";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -208,6 +210,7 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
         tsign = intent.getStringExtra("tsign");
         nflag = intent.getStringExtra("nflag");
         thours = Integer.parseInt(intent.getStringExtra("thours"));
+        balance_amount = intent.getStringExtra("balance_amount");
         txtTitle.setText(title);
         if (!description.equals("")) {
             deshideshow.setVisibility(View.VISIBLE);
@@ -275,6 +278,25 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
                 b = getBitmapRotatedByDegree(b, imageRotation);
             imageView.setImageBitmap(b);
         } catch (Exception e) {
+        }
+
+
+        try {
+            txtBalanceAmount.setText(preferences.getString("currency_sign", "") + balance_amount);
+            paidamount = (Double.parseDouble(balance_amount) - Double.parseDouble(tamount));
+            if (paidamount >= 0.0) {
+                pay.setVisibility(View.VISIBLE);
+                addMoney.setVisibility(View.GONE);
+                txtPayingAmount.setText(preferences.getString("currency_sign", "") + "" + balance_amount + "-" + preferences.getString("currency_sign", "") + tamount + "=" + preferences.getString("currency_sign", "") + (Double.parseDouble(balance_amount) - Double.parseDouble(tamount)));
+            } else {
+                txtPayingAmount.setText(preferences.getString("currency_sign", "") + "" + balance_amount + "-" + preferences.getString("currency_sign", "") + tamount + "=" + preferences.getString("currency_sign", "") + (Double.parseDouble(balance_amount) - Double.parseDouble(tamount)));
+                pay.setVisibility(View.GONE);
+                addMoney.setVisibility(View.VISIBLE);
+            }
+
+
+        } catch (Exception e) {
+            //Toast.makeText(getApplicationContext(), "" + e, Toast.LENGTH_LONG).show();
         }
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -356,7 +378,10 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
                                         Calendar cal = Calendar.getInstance();
                                         sdate = format1.format(cal.getTime());*/
                                         }
-                                        new addLocationDataDetails().execute();
+                                        if(clc==0) {
+                                            new addLocationDataDetails().execute();
+                                            clc++;
+                                        }
 
 
                                     }
@@ -391,7 +416,10 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
                     notification_status = 0;
                     flag = 1;
                     tamount = "0";
-                    new addLocationDataDetails().execute();
+                    if(clc==0) {
+                        new addLocationDataDetails().execute();
+                        clc++;
+                    }
                 } else {
 
                     Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_SHORT).show();
@@ -430,12 +458,12 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
         }
 
 
-        if (AppStatus.getInstance(getApplicationContext()).isOnline()) {
+        /*if (AppStatus.getInstance(getApplicationContext()).isOnline()) {
             new dueFeesAvailable().execute();
         } else {
 
             Toast.makeText(getApplicationContext(), Constant.INTERNET_MSG, Toast.LENGTH_SHORT).show();
-        }
+        }*/
         addMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -625,14 +653,14 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
         protected void onPreExecute() {
             super.onPreExecute();
             // Create a progressdialog
-            mProgressDialog = new ProgressDialog(AdsPreviewActivity.this);
+          //  mProgressDialog = new ProgressDialog(AdsPreviewActivity.this);
             // Set progressdialog title
-            mProgressDialog.setTitle(res.getString(R.string.jpw));
+          //  mProgressDialog.setTitle(res.getString(R.string.jpw));
             // Set progressdialog message
-            mProgressDialog.setMessage(res.getString(R.string.juload));
+         //   mProgressDialog.setMessage(res.getString(R.string.juload));
             //mProgressDialog.setIndeterminate(false);
             // Show progressdialog
-            mProgressDialog.show();
+         //   mProgressDialog.show();
         }
 
         @Override
@@ -812,7 +840,7 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
         @Override
         protected void onPostExecute(Void args) {
             // Close the progressdialog
-            mProgressDialog.dismiss();
+          //  mProgressDialog.dismiss();
             if (status) {
 
 
@@ -842,8 +870,7 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
         protected void onPreExecute() {
             // TODO Auto-generated method stub
             super.onPreExecute();
-            dialog = ProgressDialog.show(AdsPreviewActivity.this, "",
-                    res.getString(R.string.jpw), true);
+            dialog = ProgressDialog.show(AdsPreviewActivity.this, "", res.getString(R.string.jpw), true);
             dialog.show();
         }
 
@@ -1173,7 +1200,13 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
+            // Create a progressdialog
+            mProgressDialog1 = new ProgressDialog(AdsPreviewActivity.this);
+            // Set progressdialog title
+            mProgressDialog1.setTitle(res.getString(R.string.jpw));
+            mProgressDialog1.setIndeterminate(true);
+            mProgressDialog1.setCancelable(false);
+            mProgressDialog1.show();
         }
 
         @Override
@@ -1195,20 +1228,20 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
 
             if (balanceAmountResponse.compareTo("") != 0) {
                 if (isJSONValid(balanceAmountResponse)) {
-                    JSONArray leadJsonObj = null;
+                    // JSONArray leadJsonObj = null;
                     try {
                         JSONObject jObject = new JSONObject(balanceAmountResponse);
                         status = jObject.getBoolean("status");
                         if (status) {
-                            JSONArray introJsonArray = jObject.getJSONArray("balanceamount");
+                            /*JSONArray introJsonArray = jObject.getJSONArray("balanceamount");
                             for (int i = 0; i < introJsonArray.length(); i++) {
                                 JSONObject introJsonObject = introJsonArray.getJSONObject(i);
                                 balance_amount = introJsonObject.getString("balance_amount");
-                            }
-
+                            }*/
+                            balance_amount = jObject.getString("balanceamount");
 
                         } else {
-
+                            balance_amount = "0.0";
                         }
 
 
@@ -1218,11 +1251,11 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
 
 
                 } else {
-                    Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_LONG).show();
+                    //  Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_LONG).show();
                 }
             } else {
 
-                Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_LONG).show();
+                //  Toast.makeText(getApplicationContext(), res.getString(R.string.jpcnc), Toast.LENGTH_LONG).show();
 
             }
 
@@ -1231,26 +1264,25 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
 
         @Override
         protected void onPostExecute(Void args) {
+            mProgressDialog1.dismiss();
             try {
                 txtBalanceAmount.setText(preferences.getString("currency_sign", "") + balance_amount);
-                if (Integer.parseInt(balance_amount) >= 0) {
-                    paidamount = (Double.parseDouble(balance_amount) - Double.parseDouble(tamount));
-                    if (paidamount >= 0.0) {
-                        pay.setVisibility(View.VISIBLE);
-                        addMoney.setVisibility(View.GONE);
-
-                        txtPayingAmount.setText(preferences.getString("currency_sign", "") + "" + balance_amount + "-" + preferences.getString("currency_sign", "") + tamount + "=" + preferences.getString("currency_sign", "") + (Double.parseDouble(balance_amount) - Double.parseDouble(tamount)));
-                    } else {
-
-                        txtPayingAmount.setText(preferences.getString("currency_sign", "") + "" + balance_amount + "-" + preferences.getString("currency_sign", "") + tamount + "=" + preferences.getString("currency_sign", "") + (Double.parseDouble(balance_amount) - Double.parseDouble(tamount)));
-                        pay.setVisibility(View.GONE);
-                        addMoney.setVisibility(View.VISIBLE);
-                    }
-
+                paidamount = (Double.parseDouble(balance_amount) - Double.parseDouble(tamount));
+                if (paidamount >= 0.0) {
+                    pay.setVisibility(View.VISIBLE);
+                    addMoney.setVisibility(View.GONE);
+                    txtPayingAmount.setText(preferences.getString("currency_sign", "") + "" + balance_amount + "-" + preferences.getString("currency_sign", "") + tamount + "=" + preferences.getString("currency_sign", "") + (Double.parseDouble(balance_amount) - Double.parseDouble(tamount)));
+                } else {
+                    txtPayingAmount.setText(preferences.getString("currency_sign", "") + "" + balance_amount + "-" + preferences.getString("currency_sign", "") + tamount + "=" + preferences.getString("currency_sign", "") + (Double.parseDouble(balance_amount) - Double.parseDouble(tamount)));
+                    pay.setVisibility(View.GONE);
+                    addMoney.setVisibility(View.VISIBLE);
                 }
-            } catch (Exception e) {
 
+
+            } catch (Exception e) {
+                //Toast.makeText(getApplicationContext(), "" + e, Toast.LENGTH_LONG).show();
             }
+
         }
     }
 
@@ -1320,6 +1352,7 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
         }
         return time;
     }
+
     private void loadLanguage() {
         Locale locale = new Locale(getLangCode());
         Locale.setDefault(locale);
@@ -1333,6 +1366,7 @@ public class AdsPreviewActivity extends FragmentActivity implements OnMapReadyCa
         String langCode = preferences.getString(KEY_LANG, "en");
         return langCode;
     }
+
     public String getRealPathFromUri(Uri contentUri) {
         Cursor cursor = null;
         try {
